@@ -77,7 +77,7 @@ export function PhotosTab({ clientId }: { clientId: string }) {
       const { error } = await supabase.from("progress_photos").insert({
         client_id: clientId,
         url: url.trim(),
-        category: category as Photo["category"],
+        category: category as (typeof CATEGORIES)[number]["value"],
         taken_on: takenOn,
       });
       if (error) throw error;
