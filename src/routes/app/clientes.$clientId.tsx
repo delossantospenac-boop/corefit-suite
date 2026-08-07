@@ -77,14 +77,14 @@ function ClientProfile() {
     mutationFn: async (values: {
       full_name: string;
       email: string;
-      phone?: string;
-      sex?: string;
-      birth_date?: string;
-      height_cm?: string;
-      weight_kg?: string;
-      goal?: string;
+      phone?: string | undefined;
+      sex?: string | undefined;
+      birth_date?: string | undefined;
+      height_cm?: string | undefined;
+      weight_kg?: string | undefined;
+      goal?: string | undefined;
       status: "activo" | "inactivo" | "pausado" | "finalizado";
-      notes?: string;
+      notes?: string | undefined;
     }) => {
       const { error } = await supabase
         .from("clients")
