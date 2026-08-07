@@ -15,6 +15,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as AppIndexRouteImport } from './routes/app/index'
 import { Route as AppClientesIndexRouteImport } from './routes/app/clientes.index'
+import { Route as AppClientesClientIdRouteImport } from './routes/app/clientes.$clientId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -46,6 +47,11 @@ const AppClientesIndexRoute = AppClientesIndexRouteImport.update({
   path: '/clientes/',
   getParentRoute: () => AppRouteRoute,
 } as any)
+const AppClientesClientIdRoute = AppClientesClientIdRouteImport.update({
+  id: '/clientes/$clientId',
+  path: '/clientes/$clientId',
+  getParentRoute: () => AppRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -53,6 +59,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/reset-password': typeof ResetPasswordRoute
   '/app/': typeof AppIndexRoute
+  '/app/clientes/$clientId': typeof AppClientesClientIdRoute
   '/app/clientes/': typeof AppClientesIndexRoute
 }
 export interface FileRoutesByTo {
@@ -60,6 +67,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/reset-password': typeof ResetPasswordRoute
   '/app': typeof AppIndexRoute
+  '/app/clientes/$clientId': typeof AppClientesClientIdRoute
   '/app/clientes': typeof AppClientesIndexRoute
 }
 export interface FileRoutesById {
@@ -69,14 +77,27 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/reset-password': typeof ResetPasswordRoute
   '/app/': typeof AppIndexRoute
+  '/app/clientes/$clientId': typeof AppClientesClientIdRoute
   '/app/clientes/': typeof AppClientesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/app' | '/auth' | '/reset-password' | '/app/' | '/app/clientes/'
+    | '/'
+    | '/app'
+    | '/auth'
+    | '/reset-password'
+    | '/app/'
+    | '/app/clientes/$clientId'
+    | '/app/clientes/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/reset-password' | '/app' | '/app/clientes'
+  to:
+    | '/'
+    | '/auth'
+    | '/reset-password'
+    | '/app'
+    | '/app/clientes/$clientId'
+    | '/app/clientes'
   id:
     | '__root__'
     | '/'
@@ -84,6 +105,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/reset-password'
     | '/app/'
+    | '/app/clientes/$clientId'
     | '/app/clientes/'
   fileRoutesById: FileRoutesById
 }
@@ -138,16 +160,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppClientesIndexRouteImport
       parentRoute: typeof AppRouteRoute
     }
+    '/app/clientes/$clientId': {
+      id: '/app/clientes/$clientId'
+      path: '/clientes/$clientId'
+      fullPath: '/app/clientes/$clientId'
+      preLoaderRoute: typeof AppClientesClientIdRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
   }
 }
 
 interface AppRouteRouteChildren {
   AppIndexRoute: typeof AppIndexRoute
+  AppClientesClientIdRoute: typeof AppClientesClientIdRoute
   AppClientesIndexRoute: typeof AppClientesIndexRoute
 }
 
 const AppRouteRouteChildren: AppRouteRouteChildren = {
   AppIndexRoute: AppIndexRoute,
+  AppClientesClientIdRoute: AppClientesClientIdRoute,
   AppClientesIndexRoute: AppClientesIndexRoute,
 }
 

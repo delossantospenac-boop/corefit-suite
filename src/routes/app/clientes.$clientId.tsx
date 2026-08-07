@@ -74,20 +74,31 @@ function ClientProfile() {
   });
 
   const update = useMutation({
-    mutationFn: async (values: Record<string, unknown>) => {
+    mutationFn: async (values: {
+      full_name: string;
+      email: string;
+      phone?: string;
+      sex?: string;
+      birth_date?: string;
+      height_cm?: string;
+      weight_kg?: string;
+      goal?: string;
+      status: "activo" | "inactivo" | "pausado" | "finalizado";
+      notes?: string;
+    }) => {
       const { error } = await supabase
         .from("clients")
         .update({
-          full_name: values.full_name as string,
-          email: (values.email as string) || null,
-          phone: (values.phone as string) || null,
-          sex: (values.sex as string) || null,
-          birth_date: (values.birth_date as string) || null,
+          full_name: values.full_name,
+          email: values.email || null,
+          phone: values.phone || null,
+          sex: values.sex || null,
+          birth_date: values.birth_date || null,
           height_cm: values.height_cm ? Number(values.height_cm) : null,
           weight_kg: values.weight_kg ? Number(values.weight_kg) : null,
-          goal: (values.goal as string) || null,
-          status: values.status as "activo",
-          notes: (values.notes as string) || null,
+          goal: values.goal || null,
+          status: values.status,
+          notes: values.notes || null,
         })
         .eq("id", clientId);
       if (error) throw error;
