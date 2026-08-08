@@ -349,6 +349,33 @@ export type Database = {
           },
         ]
       }
+      exercise_categories: {
+        Row: {
+          created_at: string
+          id: string
+          kind: string
+          label: string
+          slug: string
+          sort_order: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          kind: string
+          label: string
+          slug: string
+          sort_order?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          kind?: string
+          label?: string
+          slug?: string
+          sort_order?: number
+        }
+        Relationships: []
+      }
       exercises: {
         Row: {
           common_mistakes: string | null
@@ -356,11 +383,14 @@ export type Database = {
           description: string | null
           difficulty: string | null
           equipment: string | null
+          exercise_type: string | null
           id: string
           image_url: string | null
           instructions: string | null
           muscle_group: string | null
           name: string
+          secondary_muscles: string[]
+          tips: string | null
           trainer_id: string | null
           updated_at: string
           variations: string | null
@@ -372,11 +402,14 @@ export type Database = {
           description?: string | null
           difficulty?: string | null
           equipment?: string | null
+          exercise_type?: string | null
           id?: string
           image_url?: string | null
           instructions?: string | null
           muscle_group?: string | null
           name: string
+          secondary_muscles?: string[]
+          tips?: string | null
           trainer_id?: string | null
           updated_at?: string
           variations?: string | null
@@ -388,11 +421,14 @@ export type Database = {
           description?: string | null
           difficulty?: string | null
           equipment?: string | null
+          exercise_type?: string | null
           id?: string
           image_url?: string | null
           instructions?: string | null
           muscle_group?: string | null
           name?: string
+          secondary_muscles?: string[]
+          tips?: string | null
           trainer_id?: string | null
           updated_at?: string
           variations?: string | null
@@ -1122,26 +1158,35 @@ export type Database = {
         Row: {
           created_at: string
           day_index: number
+          description: string | null
+          estimated_min: number | null
           id: string
           name: string
           notes: string | null
           template_id: string
+          weekday: number | null
         }
         Insert: {
           created_at?: string
           day_index?: number
+          description?: string | null
+          estimated_min?: number | null
           id?: string
           name: string
           notes?: string | null
           template_id: string
+          weekday?: number | null
         }
         Update: {
           created_at?: string
           day_index?: number
+          description?: string | null
+          estimated_min?: number | null
           id?: string
           name?: string
           notes?: string | null
           template_id?: string
+          weekday?: number | null
         }
         Relationships: [
           {
@@ -1160,6 +1205,7 @@ export type Database = {
           day_id: string
           distance_m: number | null
           exercise_id: string | null
+          group_label: string | null
           id: string
           notes: string | null
           position: number
@@ -1167,9 +1213,11 @@ export type Database = {
           rest_seconds: number | null
           rir: number | null
           rpe: number | null
+          set_type: Database["public"]["Enums"]["set_type"]
           sets: number | null
           tempo: string | null
           time_seconds: number | null
+          tips: string | null
           weight: number | null
         }
         Insert: {
@@ -1178,6 +1226,7 @@ export type Database = {
           day_id: string
           distance_m?: number | null
           exercise_id?: string | null
+          group_label?: string | null
           id?: string
           notes?: string | null
           position?: number
@@ -1185,9 +1234,11 @@ export type Database = {
           rest_seconds?: number | null
           rir?: number | null
           rpe?: number | null
+          set_type?: Database["public"]["Enums"]["set_type"]
           sets?: number | null
           tempo?: string | null
           time_seconds?: number | null
+          tips?: string | null
           weight?: number | null
         }
         Update: {
@@ -1196,6 +1247,7 @@ export type Database = {
           day_id?: string
           distance_m?: number | null
           exercise_id?: string | null
+          group_label?: string | null
           id?: string
           notes?: string | null
           position?: number
@@ -1203,9 +1255,11 @@ export type Database = {
           rest_seconds?: number | null
           rir?: number | null
           rpe?: number | null
+          set_type?: Database["public"]["Enums"]["set_type"]
           sets?: number | null
           tempo?: string | null
           time_seconds?: number | null
+          tips?: string | null
           weight?: number | null
         }
         Relationships: [
@@ -1294,6 +1348,7 @@ export type Database = {
       }
       workout_logs: {
         Row: {
+          calories: number | null
           client_id: string
           created_at: string
           day_id: string | null
@@ -1303,11 +1358,15 @@ export type Database = {
           notes: string | null
           pain: string | null
           performed_at: string
+          prs_count: number
           status: string
           template_id: string | null
+          total_reps: number
+          total_sets: number
           total_volume: number | null
         }
         Insert: {
+          calories?: number | null
           client_id: string
           created_at?: string
           day_id?: string | null
@@ -1317,11 +1376,15 @@ export type Database = {
           notes?: string | null
           pain?: string | null
           performed_at?: string
+          prs_count?: number
           status?: string
           template_id?: string | null
+          total_reps?: number
+          total_sets?: number
           total_volume?: number | null
         }
         Update: {
+          calories?: number | null
           client_id?: string
           created_at?: string
           day_id?: string | null
@@ -1331,8 +1394,11 @@ export type Database = {
           notes?: string | null
           pain?: string | null
           performed_at?: string
+          prs_count?: number
           status?: string
           template_id?: string | null
+          total_reps?: number
+          total_sets?: number
           total_volume?: number | null
         }
         Relationships: [
@@ -1359,39 +1425,267 @@ export type Database = {
           },
         ]
       }
+      workout_notes: {
+        Row: {
+          author_id: string
+          body: string
+          client_id: string | null
+          created_at: string
+          day_id: string | null
+          exercise_id: string | null
+          id: string
+          template_id: string | null
+        }
+        Insert: {
+          author_id: string
+          body: string
+          client_id?: string | null
+          created_at?: string
+          day_id?: string | null
+          exercise_id?: string | null
+          id?: string
+          template_id?: string | null
+        }
+        Update: {
+          author_id?: string
+          body?: string
+          client_id?: string | null
+          created_at?: string
+          day_id?: string | null
+          exercise_id?: string | null
+          id?: string
+          template_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workout_notes_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "workout_notes_day_id_fkey"
+            columns: ["day_id"]
+            isOneToOne: false
+            referencedRelation: "workout_days"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "workout_notes_exercise_id_fkey"
+            columns: ["exercise_id"]
+            isOneToOne: false
+            referencedRelation: "exercises"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "workout_notes_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "workout_templates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      workout_sessions: {
+        Row: {
+          client_id: string
+          created_at: string
+          current_index: number
+          day_id: string | null
+          finished_at: string | null
+          id: string
+          log_id: string | null
+          started_at: string
+          status: Database["public"]["Enums"]["session_status"]
+          template_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          client_id: string
+          created_at?: string
+          current_index?: number
+          day_id?: string | null
+          finished_at?: string | null
+          id?: string
+          log_id?: string | null
+          started_at?: string
+          status?: Database["public"]["Enums"]["session_status"]
+          template_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          client_id?: string
+          created_at?: string
+          current_index?: number
+          day_id?: string | null
+          finished_at?: string | null
+          id?: string
+          log_id?: string | null
+          started_at?: string
+          status?: Database["public"]["Enums"]["session_status"]
+          template_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workout_sessions_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "workout_sessions_day_id_fkey"
+            columns: ["day_id"]
+            isOneToOne: false
+            referencedRelation: "workout_days"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "workout_sessions_log_id_fkey"
+            columns: ["log_id"]
+            isOneToOne: false
+            referencedRelation: "workout_logs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "workout_sessions_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "workout_templates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      workout_sets: {
+        Row: {
+          created_at: string
+          distance_m: number | null
+          id: string
+          notes: string | null
+          reps: string | null
+          rest_seconds: number | null
+          rir: number | null
+          rpe: number | null
+          set_number: number
+          set_type: Database["public"]["Enums"]["set_type"]
+          tempo: string | null
+          time_seconds: number | null
+          weight: number | null
+          workout_exercise_id: string
+        }
+        Insert: {
+          created_at?: string
+          distance_m?: number | null
+          id?: string
+          notes?: string | null
+          reps?: string | null
+          rest_seconds?: number | null
+          rir?: number | null
+          rpe?: number | null
+          set_number: number
+          set_type?: Database["public"]["Enums"]["set_type"]
+          tempo?: string | null
+          time_seconds?: number | null
+          weight?: number | null
+          workout_exercise_id: string
+        }
+        Update: {
+          created_at?: string
+          distance_m?: number | null
+          id?: string
+          notes?: string | null
+          reps?: string | null
+          rest_seconds?: number | null
+          rir?: number | null
+          rpe?: number | null
+          set_number?: number
+          set_type?: Database["public"]["Enums"]["set_type"]
+          tempo?: string | null
+          time_seconds?: number | null
+          weight?: number | null
+          workout_exercise_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workout_sets_workout_exercise_id_fkey"
+            columns: ["workout_exercise_id"]
+            isOneToOne: false
+            referencedRelation: "workout_exercises"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       workout_templates: {
         Row: {
           active: boolean
+          archived: boolean
           client_id: string | null
           created_at: string
+          days_per_week: number
           description: string | null
+          end_date: string | null
+          goal: Database["public"]["Enums"]["routine_goal"] | null
           id: string
           is_template: boolean
+          level: Database["public"]["Enums"]["routine_level"] | null
           name: string
+          notes: string | null
+          parent_routine_id: string | null
+          phase: number
+          source_template_id: string | null
+          start_date: string | null
+          status: Database["public"]["Enums"]["routine_status"]
+          suggested_time: string | null
           trainer_id: string
           updated_at: string
           weeks: number
         }
         Insert: {
           active?: boolean
+          archived?: boolean
           client_id?: string | null
           created_at?: string
+          days_per_week?: number
           description?: string | null
+          end_date?: string | null
+          goal?: Database["public"]["Enums"]["routine_goal"] | null
           id?: string
           is_template?: boolean
+          level?: Database["public"]["Enums"]["routine_level"] | null
           name: string
+          notes?: string | null
+          parent_routine_id?: string | null
+          phase?: number
+          source_template_id?: string | null
+          start_date?: string | null
+          status?: Database["public"]["Enums"]["routine_status"]
+          suggested_time?: string | null
           trainer_id: string
           updated_at?: string
           weeks?: number
         }
         Update: {
           active?: boolean
+          archived?: boolean
           client_id?: string | null
           created_at?: string
+          days_per_week?: number
           description?: string | null
+          end_date?: string | null
+          goal?: Database["public"]["Enums"]["routine_goal"] | null
           id?: string
           is_template?: boolean
+          level?: Database["public"]["Enums"]["routine_level"] | null
           name?: string
+          notes?: string | null
+          parent_routine_id?: string | null
+          phase?: number
+          source_template_id?: string | null
+          start_date?: string | null
+          status?: Database["public"]["Enums"]["routine_status"]
+          suggested_time?: string | null
           trainer_id?: string
           updated_at?: string
           weeks?: number
@@ -1402,6 +1696,20 @@ export type Database = {
             columns: ["client_id"]
             isOneToOne: false
             referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "workout_templates_parent_routine_id_fkey"
+            columns: ["parent_routine_id"]
+            isOneToOne: false
+            referencedRelation: "workout_templates"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "workout_templates_source_template_id_fkey"
+            columns: ["source_template_id"]
+            isOneToOne: false
+            referencedRelation: "workout_templates"
             referencedColumns: ["id"]
           },
         ]
@@ -1427,6 +1735,10 @@ export type Database = {
       is_super_admin: { Args: never; Returns: boolean }
       is_trainer_of_user: { Args: { _profile_id: string }; Returns: boolean }
       template_of_day: { Args: { _day_id: string }; Returns: string }
+      template_of_workout_exercise: {
+        Args: { _we_id: string }
+        Returns: string
+      }
     }
     Enums: {
       app_role: "super_admin" | "gym_admin" | "trainer" | "client"
@@ -1444,6 +1756,33 @@ export type Database = {
         | "perfil_izquierdo"
         | "perfil_derecho"
         | "personalizada"
+      routine_goal:
+        | "hipertrofia"
+        | "perdida_grasa"
+        | "fuerza"
+        | "resistencia"
+        | "recomposicion"
+        | "acondicionamiento"
+        | "personalizado"
+      routine_level: "principiante" | "intermedio" | "avanzado"
+      routine_status:
+        | "activa"
+        | "programada"
+        | "finalizada"
+        | "pausada"
+        | "archivada"
+      session_status: "en_curso" | "completada" | "abandonada"
+      set_type:
+        | "normal"
+        | "calentamiento"
+        | "drop_set"
+        | "superserie"
+        | "triserie"
+        | "descendente"
+        | "amrap"
+        | "emom"
+        | "isometrico"
+        | "circuito"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1587,6 +1926,36 @@ export const Constants = {
         "perfil_izquierdo",
         "perfil_derecho",
         "personalizada",
+      ],
+      routine_goal: [
+        "hipertrofia",
+        "perdida_grasa",
+        "fuerza",
+        "resistencia",
+        "recomposicion",
+        "acondicionamiento",
+        "personalizado",
+      ],
+      routine_level: ["principiante", "intermedio", "avanzado"],
+      routine_status: [
+        "activa",
+        "programada",
+        "finalizada",
+        "pausada",
+        "archivada",
+      ],
+      session_status: ["en_curso", "completada", "abandonada"],
+      set_type: [
+        "normal",
+        "calentamiento",
+        "drop_set",
+        "superserie",
+        "triserie",
+        "descendente",
+        "amrap",
+        "emom",
+        "isometrico",
+        "circuito",
       ],
     },
   },
