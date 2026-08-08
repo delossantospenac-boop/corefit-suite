@@ -16,7 +16,7 @@ export type LogSetRow = Database["public"]["Tables"]["workout_log_sets"]["Row"];
 
 export type FullExercise = RoutineExerciseRow & {
   exercise: Pick<ExerciseRow, "id" | "name" | "muscle_group" | "equipment" | "video_url" | "image_url"> | null;
-  sets: PlannedSetRow[];
+  plannedSets: PlannedSetRow[];
 };
 export type FullDay = DayRow & { exercises: FullExercise[] };
 export type FullRoutine = RoutineRow & { days: FullDay[] };
@@ -179,7 +179,7 @@ export async function fetchRoutine(id: string): Promise<FullRoutine | null> {
         .map((e) => ({
           ...e,
           exercise: library.find((l) => l.id === e.exercise_id) ?? null,
-          sets: sets.filter((s) => s.workout_exercise_id === e.id),
+          plannedSets: sets.filter((s) => s.workout_exercise_id === e.id),
         })),
     })),
   };
@@ -409,9 +409,9 @@ export async function duplicateRoutine(
         .single();
       if (eErr) throw eErr;
 
-      if (ex.sets.length > 0) {
+      if (ex.plannedSets.length > 0) {
         await supabase.from("workout_sets").insert(
-          ex.sets.map((s) => ({
+          ex.plannedSets.map((s) => ({
             workout_exercise_id: newEx.id,
             set_number: s.set_number,
             set_type: s.set_type,
