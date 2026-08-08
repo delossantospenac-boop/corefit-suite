@@ -288,7 +288,7 @@ function TrainerDashboard() {
               description="Agenda una sesión con tus clientes."
               action={
                 <Button asChild variant="secondary" size="sm">
-                  <Link to="/app/agenda">Ir a la agenda</Link>
+                  <Link to="/app/clientes">Ver clientes</Link>
                 </Button>
               }
             />
