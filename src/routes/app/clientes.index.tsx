@@ -494,6 +494,34 @@ export function ClientDialog({
               maxLength={1000}
             />
           </div>
+          {allowAccess && (
+            <div className="card-surface space-y-3 p-3">
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <p className="text-sm font-medium">Crear acceso al panel del cliente</p>
+                  <p className="text-xs text-muted-foreground">
+                    Se creará una cuenta con el correo indicado para que pueda entrenar desde su móvil.
+                  </p>
+                </div>
+                <Switch
+                  checked={values.create_access}
+                  onCheckedChange={(v) => set("create_access", v)}
+                />
+              </div>
+              {values.create_access && (
+                <div className="space-y-2">
+                  <Label htmlFor="access_password">Contraseña temporal (opcional)</Label>
+                  <Input
+                    id="access_password"
+                    value={values.access_password}
+                    onChange={(e) => set("access_password", e.target.value)}
+                    placeholder="Se genera automáticamente si lo dejas vacío"
+                  />
+                </div>
+              )}
+            </div>
+          )}
+
           {error && (
             <p className="rounded-lg border border-destructive/40 bg-destructive/10 px-3 py-2 text-sm text-destructive">
               {error}
