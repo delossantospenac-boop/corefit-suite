@@ -336,14 +336,18 @@ function RutinasPage() {
       />
 
       <RoutineForm
+        key={editing?.id ?? "none"}
         open={!!editing}
-        onOpenChange={(v) => !v && setEditing(null)}
+        onOpenChange={(v) => {
+          if (!v) setEditing(null);
+        }}
         title="Editar rutina"
-        initial={editing ?? undefined}
+        {...(editing ? { initial: editing } : {})}
         clients={clients}
         busy={update.isPending}
         onSubmit={(values) => update.mutate(values)}
       />
+
 
       <Dialog open={!!assignTarget} onOpenChange={(v) => !v && setAssignTarget(null)}>
         <DialogContent className="sm:max-w-sm">
