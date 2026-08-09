@@ -400,7 +400,7 @@ function DayCard({
   });
 
   const dupDay = useMutation({
-    mutationFn: () => duplicateDay(day.id, routineId),
+    mutationFn: () => duplicateDay(day.id),
     onSuccess: () => {
       toast.success("Día duplicado");
       onChanged();
@@ -427,7 +427,7 @@ function DayCard({
   });
 
   const dupEx = useMutation({
-    mutationFn: (id: string) => duplicateRoutineExercise(id, day.id),
+    mutationFn: (id: string) => duplicateRoutineExercise(id),
     onSuccess: () => {
       toast.success("Ejercicio duplicado");
       onChanged();

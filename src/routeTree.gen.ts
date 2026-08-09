@@ -25,6 +25,7 @@ import { Route as ClienteRutinaRouteImport } from './routes/cliente/rutina'
 import { Route as AppClientesIndexRouteImport } from './routes/app/clientes.index'
 import { Route as AppClientesClientIdRouteImport } from './routes/app/clientes.$clientId'
 import { Route as AppRutinasIndexRouteImport } from './routes/app/rutinas.index'
+import { Route as AppRutinasRoutineIdRouteImport } from './routes/app/rutinas.$routineId'
 import { Route as ClienteEntrenarDayIdRouteImport } from './routes/cliente/entrenar.$dayId'
 
 const IndexRoute = IndexRouteImport.update({
@@ -107,6 +108,11 @@ const AppRutinasIndexRoute = AppRutinasIndexRouteImport.update({
   path: '/rutinas/',
   getParentRoute: () => AppRouteRoute,
 } as any)
+const AppRutinasRoutineIdRoute = AppRutinasRoutineIdRouteImport.update({
+  id: '/rutinas/$routineId',
+  path: '/rutinas/$routineId',
+  getParentRoute: () => AppRouteRoute,
+} as any)
 const ClienteEntrenarDayIdRoute = ClienteEntrenarDayIdRouteImport.update({
   id: '/entrenar/$dayId',
   path: '/entrenar/$dayId',
@@ -128,6 +134,7 @@ export interface FileRoutesByFullPath {
   '/app/': typeof AppIndexRoute
   '/cliente/': typeof ClienteIndexRoute
   '/app/clientes/$clientId': typeof AppClientesClientIdRoute
+  '/app/rutinas/$routineId': typeof AppRutinasRoutineIdRoute
   '/cliente/entrenar/$dayId': typeof ClienteEntrenarDayIdRoute
   '/app/clientes/': typeof AppClientesIndexRoute
   '/app/rutinas/': typeof AppRutinasIndexRoute
@@ -144,6 +151,7 @@ export interface FileRoutesByTo {
   '/app': typeof AppIndexRoute
   '/cliente': typeof ClienteIndexRoute
   '/app/clientes/$clientId': typeof AppClientesClientIdRoute
+  '/app/rutinas/$routineId': typeof AppRutinasRoutineIdRoute
   '/cliente/entrenar/$dayId': typeof ClienteEntrenarDayIdRoute
   '/app/clientes': typeof AppClientesIndexRoute
   '/app/rutinas': typeof AppRutinasIndexRoute
@@ -164,6 +172,7 @@ export interface FileRoutesById {
   '/app/': typeof AppIndexRoute
   '/cliente/': typeof ClienteIndexRoute
   '/app/clientes/$clientId': typeof AppClientesClientIdRoute
+  '/app/rutinas/$routineId': typeof AppRutinasRoutineIdRoute
   '/cliente/entrenar/$dayId': typeof ClienteEntrenarDayIdRoute
   '/app/clientes/': typeof AppClientesIndexRoute
   '/app/rutinas/': typeof AppRutinasIndexRoute
@@ -185,6 +194,7 @@ export interface FileRouteTypes {
     | '/app/'
     | '/cliente/'
     | '/app/clientes/$clientId'
+    | '/app/rutinas/$routineId'
     | '/cliente/entrenar/$dayId'
     | '/app/clientes/'
     | '/app/rutinas/'
@@ -201,6 +211,7 @@ export interface FileRouteTypes {
     | '/app'
     | '/cliente'
     | '/app/clientes/$clientId'
+    | '/app/rutinas/$routineId'
     | '/cliente/entrenar/$dayId'
     | '/app/clientes'
     | '/app/rutinas'
@@ -220,6 +231,7 @@ export interface FileRouteTypes {
     | '/app/'
     | '/cliente/'
     | '/app/clientes/$clientId'
+    | '/app/rutinas/$routineId'
     | '/cliente/entrenar/$dayId'
     | '/app/clientes/'
     | '/app/rutinas/'
@@ -348,6 +360,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppRutinasIndexRouteImport
       parentRoute: typeof AppRouteRoute
     }
+    '/app/rutinas/$routineId': {
+      id: '/app/rutinas/$routineId'
+      path: '/rutinas/$routineId'
+      fullPath: '/app/rutinas/$routineId'
+      preLoaderRoute: typeof AppRutinasRoutineIdRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
     '/cliente/entrenar/$dayId': {
       id: '/cliente/entrenar/$dayId'
       path: '/entrenar/$dayId'
@@ -379,6 +398,7 @@ const AdminRouteRouteWithChildren = AdminRouteRoute._addFileChildren(
 interface AppRouteRouteChildren {
   AppIndexRoute: typeof AppIndexRoute
   AppClientesClientIdRoute: typeof AppClientesClientIdRoute
+  AppRutinasRoutineIdRoute: typeof AppRutinasRoutineIdRoute
   AppClientesIndexRoute: typeof AppClientesIndexRoute
   AppRutinasIndexRoute: typeof AppRutinasIndexRoute
 }
@@ -386,6 +406,7 @@ interface AppRouteRouteChildren {
 const AppRouteRouteChildren: AppRouteRouteChildren = {
   AppIndexRoute: AppIndexRoute,
   AppClientesClientIdRoute: AppClientesClientIdRoute,
+  AppRutinasRoutineIdRoute: AppRutinasRoutineIdRoute,
   AppClientesIndexRoute: AppClientesIndexRoute,
   AppRutinasIndexRoute: AppRutinasIndexRoute,
 }
