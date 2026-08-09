@@ -27,9 +27,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
+import { createClientAccess } from "@/lib/admin.functions";
 import { useAuth } from "@/lib/auth-context";
+
 import {
   ageFrom,
   daysSince,
