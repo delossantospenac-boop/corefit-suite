@@ -128,7 +128,7 @@ function RutinasPage() {
   const duplicate = useMutation({
     mutationFn: async ({ id, asTemplate }: { id: string; asTemplate?: boolean }) => {
       if (!user) throw new Error("Sesión no válida");
-      return duplicateRoutine(id, user.id, { asTemplate });
+      return duplicateRoutine(id, user.id, { asTemplate: asTemplate ?? false });
     },
     onSuccess: (_id, vars) => {
       toast.success(vars.asTemplate ? "Guardada como plantilla" : "Rutina duplicada");
