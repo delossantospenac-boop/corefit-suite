@@ -21,6 +21,7 @@ import { Route as AdminEntrenadoresRouteImport } from './routes/admin/entrenador
 import { Route as AdminSuscripcionesRouteImport } from './routes/admin/suscripciones'
 import { Route as AppIndexRouteImport } from './routes/app/index'
 import { Route as ClienteIndexRouteImport } from './routes/cliente/index'
+import { Route as ClienteProgresoRouteImport } from './routes/cliente/progreso'
 import { Route as ClienteRutinaRouteImport } from './routes/cliente/rutina'
 import { Route as AppClientesIndexRouteImport } from './routes/app/clientes.index'
 import { Route as AppClientesClientIdRouteImport } from './routes/app/clientes.$clientId'
@@ -88,6 +89,11 @@ const ClienteIndexRoute = ClienteIndexRouteImport.update({
   path: '/',
   getParentRoute: () => ClienteRouteRoute,
 } as any)
+const ClienteProgresoRoute = ClienteProgresoRouteImport.update({
+  id: '/progreso',
+  path: '/progreso',
+  getParentRoute: () => ClienteRouteRoute,
+} as any)
 const ClienteRutinaRoute = ClienteRutinaRouteImport.update({
   id: '/rutina',
   path: '/rutina',
@@ -129,6 +135,7 @@ export interface FileRoutesByFullPath {
   '/admin/clientes': typeof AdminClientesRoute
   '/admin/entrenadores': typeof AdminEntrenadoresRoute
   '/admin/suscripciones': typeof AdminSuscripcionesRoute
+  '/cliente/progreso': typeof ClienteProgresoRoute
   '/cliente/rutina': typeof ClienteRutinaRoute
   '/admin/': typeof AdminIndexRoute
   '/app/': typeof AppIndexRoute
@@ -146,6 +153,7 @@ export interface FileRoutesByTo {
   '/admin/clientes': typeof AdminClientesRoute
   '/admin/entrenadores': typeof AdminEntrenadoresRoute
   '/admin/suscripciones': typeof AdminSuscripcionesRoute
+  '/cliente/progreso': typeof ClienteProgresoRoute
   '/cliente/rutina': typeof ClienteRutinaRoute
   '/admin': typeof AdminIndexRoute
   '/app': typeof AppIndexRoute
@@ -167,6 +175,7 @@ export interface FileRoutesById {
   '/admin/clientes': typeof AdminClientesRoute
   '/admin/entrenadores': typeof AdminEntrenadoresRoute
   '/admin/suscripciones': typeof AdminSuscripcionesRoute
+  '/cliente/progreso': typeof ClienteProgresoRoute
   '/cliente/rutina': typeof ClienteRutinaRoute
   '/admin/': typeof AdminIndexRoute
   '/app/': typeof AppIndexRoute
@@ -189,6 +198,7 @@ export interface FileRouteTypes {
     | '/admin/clientes'
     | '/admin/entrenadores'
     | '/admin/suscripciones'
+    | '/cliente/progreso'
     | '/cliente/rutina'
     | '/admin/'
     | '/app/'
@@ -206,6 +216,7 @@ export interface FileRouteTypes {
     | '/admin/clientes'
     | '/admin/entrenadores'
     | '/admin/suscripciones'
+    | '/cliente/progreso'
     | '/cliente/rutina'
     | '/admin'
     | '/app'
@@ -226,6 +237,7 @@ export interface FileRouteTypes {
     | '/admin/clientes'
     | '/admin/entrenadores'
     | '/admin/suscripciones'
+    | '/cliente/progreso'
     | '/cliente/rutina'
     | '/admin/'
     | '/app/'
@@ -332,6 +344,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ClienteIndexRouteImport
       parentRoute: typeof ClienteRouteRoute
     }
+    '/cliente/progreso': {
+      id: '/cliente/progreso'
+      path: '/progreso'
+      fullPath: '/cliente/progreso'
+      preLoaderRoute: typeof ClienteProgresoRouteImport
+      parentRoute: typeof ClienteRouteRoute
+    }
     '/cliente/rutina': {
       id: '/cliente/rutina'
       path: '/rutina'
@@ -416,12 +435,14 @@ const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(
 )
 
 interface ClienteRouteRouteChildren {
+  ClienteProgresoRoute: typeof ClienteProgresoRoute
   ClienteRutinaRoute: typeof ClienteRutinaRoute
   ClienteIndexRoute: typeof ClienteIndexRoute
   ClienteEntrenarDayIdRoute: typeof ClienteEntrenarDayIdRoute
 }
 
 const ClienteRouteRouteChildren: ClienteRouteRouteChildren = {
+  ClienteProgresoRoute: ClienteProgresoRoute,
   ClienteRutinaRoute: ClienteRutinaRoute,
   ClienteIndexRoute: ClienteIndexRoute,
   ClienteEntrenarDayIdRoute: ClienteEntrenarDayIdRoute,
