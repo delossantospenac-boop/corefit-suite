@@ -74,6 +74,8 @@ function ClientsPage() {
   const [sort, setSort] = useState<SortKey>("recientes");
   const [showArchived, setShowArchived] = useState(false);
   const [open, setOpen] = useState(false);
+  const [creds, setCreds] = useState<{ email: string; password: string } | null>(null);
+  const createAccess = useServerFn(createClientAccess);
 
   const clientsQuery = useQuery({
     queryKey: ["clients", showArchived],
@@ -83,28 +85,47 @@ function ClientsPage() {
   const create = useMutation({
     mutationFn: async (values: z.infer<typeof clientSchema>) => {
       if (!user) throw new Error("Sesión no válida");
-      const { error } = await supabase.from("clients").insert({
-        trainer_id: user.id,
-        full_name: values.full_name,
-        email: values.email || null,
-        phone: values.phone || null,
-        sex: values.sex || null,
-        birth_date: values.birth_date || null,
-        height_cm: values.height_cm ? Number(values.height_cm) : null,
-        weight_kg: values.weight_kg ? Number(values.weight_kg) : null,
-        goal: values.goal || null,
-        status: values.status,
-        notes: values.notes || null,
-      });
+      const { data, error } = await supabase
+        .from("clients")
+        .insert({
+          trainer_id: user.id,
+          full_name: values.full_name,
+          email: values.email || null,
+          phone: values.phone || null,
+          sex: values.sex || null,
+          birth_date: values.birth_date || null,
+          height_cm: values.height_cm ? Number(values.height_cm) : null,
+          weight_kg: values.weight_kg ? Number(values.weight_kg) : null,
+          goal: values.goal || null,
+          status: values.status,
+          notes: values.notes || null,
+        })
+        .select("id")
+        .single();
       if (error) throw error;
+
+      if (values.create_access) {
+        if (!values.email) throw new Error("Necesitas un correo para crear el acceso del cliente");
+        const res = await createAccess({
+          data: {
+            clientId: data.id,
+            email: values.email,
+            ...(values.access_password ? { password: values.access_password } : {}),
+          },
+        });
+        return { email: res.email, password: res.password };
+      }
+      return null;
     },
-    onSuccess: () => {
-      toast.success("Cliente creado");
+    onSuccess: (result) => {
+      toast.success(result ? "Cliente y acceso creados" : "Cliente creado");
       setOpen(false);
+      if (result) setCreds(result);
       void queryClient.invalidateQueries({ queryKey: ["clients"] });
     },
     onError: (e: Error) => toast.error(e.message),
   });
+
 
   const clients = clientsQuery.data ?? [];
 
