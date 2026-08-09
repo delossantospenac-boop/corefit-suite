@@ -77,8 +77,9 @@ function MisFotos() {
 
       <SectionCard title="Comparador antes / después">
         <div className="grid grid-cols-2 gap-3">
-          <PhotoPicker label="Antes" photos={photos} value={beforeId} onChange={setBeforeId} image={before?.url} />
-          <PhotoPicker label="Después" photos={photos} value={afterId} onChange={setAfterId} image={after?.url} />
+          <PhotoPicker label="Antes" photos={photos} value={beforeId} onChange={setBeforeId} {...(before?.url ? { image: before.url } : {})} />
+          <PhotoPicker label="Después" photos={photos} value={afterId} onChange={setAfterId} {...(after?.url ? { image: after.url } : {})} />
+
         </div>
         {before && after && (
           <p className="mt-3 flex items-center justify-center gap-2 text-xs text-muted-foreground">
