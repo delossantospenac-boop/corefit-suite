@@ -59,7 +59,10 @@ const clientSchema = z.object({
   goal: z.string().trim().max(200).optional(),
   status: z.enum(["activo", "inactivo", "pausado", "finalizado"]),
   notes: z.string().trim().max(1000).optional(),
+  create_access: z.boolean().optional(),
+  access_password: z.union([z.string().min(8, "Mínimo 8 caracteres").max(72), z.literal("")]).optional(),
 });
+
 
 type SortKey = "recientes" | "nombre" | "actividad";
 

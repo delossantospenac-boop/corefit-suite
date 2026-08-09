@@ -16,6 +16,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ClienteRouteRouteImport } from './routes/cliente/route'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
+import { Route as AdminEntrenadoresRouteImport } from './routes/admin/entrenadores'
 import { Route as AppIndexRouteImport } from './routes/app/index'
 import { Route as ClienteIndexRouteImport } from './routes/cliente/index'
 import { Route as AppClientesIndexRouteImport } from './routes/app/clientes.index'
@@ -56,6 +57,11 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AdminRouteRoute,
 } as any)
+const AdminEntrenadoresRoute = AdminEntrenadoresRouteImport.update({
+  id: '/entrenadores',
+  path: '/entrenadores',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
 const AppIndexRoute = AppIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -84,6 +90,7 @@ export interface FileRoutesByFullPath {
   '/cliente': typeof ClienteRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/admin/entrenadores': typeof AdminEntrenadoresRoute
   '/admin/': typeof AdminIndexRoute
   '/app/': typeof AppIndexRoute
   '/cliente/': typeof ClienteIndexRoute
@@ -94,6 +101,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/admin/entrenadores': typeof AdminEntrenadoresRoute
   '/admin': typeof AdminIndexRoute
   '/app': typeof AppIndexRoute
   '/cliente': typeof ClienteIndexRoute
@@ -108,6 +116,7 @@ export interface FileRoutesById {
   '/cliente': typeof ClienteRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/admin/entrenadores': typeof AdminEntrenadoresRoute
   '/admin/': typeof AdminIndexRoute
   '/app/': typeof AppIndexRoute
   '/cliente/': typeof ClienteIndexRoute
@@ -123,6 +132,7 @@ export interface FileRouteTypes {
     | '/cliente'
     | '/auth'
     | '/reset-password'
+    | '/admin/entrenadores'
     | '/admin/'
     | '/app/'
     | '/cliente/'
@@ -133,6 +143,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/reset-password'
+    | '/admin/entrenadores'
     | '/admin'
     | '/app'
     | '/cliente'
@@ -146,6 +157,7 @@ export interface FileRouteTypes {
     | '/cliente'
     | '/auth'
     | '/reset-password'
+    | '/admin/entrenadores'
     | '/admin/'
     | '/app/'
     | '/cliente/'
@@ -213,6 +225,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRouteRoute
     }
+    '/admin/entrenadores': {
+      id: '/admin/entrenadores'
+      path: '/entrenadores'
+      fullPath: '/admin/entrenadores'
+      preLoaderRoute: typeof AdminEntrenadoresRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
     '/app/': {
       id: '/app/'
       path: '/'
@@ -245,10 +264,12 @@ declare module '@tanstack/react-router' {
 }
 
 interface AdminRouteRouteChildren {
+  AdminEntrenadoresRoute: typeof AdminEntrenadoresRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
 const AdminRouteRouteChildren: AdminRouteRouteChildren = {
+  AdminEntrenadoresRoute: AdminEntrenadoresRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
 
