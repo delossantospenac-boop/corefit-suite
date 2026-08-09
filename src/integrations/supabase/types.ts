@@ -49,6 +49,7 @@ export type Database = {
       }
       appointments: {
         Row: {
+          class_type: string | null
           client_id: string
           created_at: string
           duration_min: number
@@ -61,6 +62,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          class_type?: string | null
           client_id: string
           created_at?: string
           duration_min?: number
@@ -73,6 +75,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          class_type?: string | null
           client_id?: string
           created_at?: string
           duration_min?: number
@@ -890,6 +893,8 @@ export type Database = {
       }
       profiles: {
         Row: {
+          access_enabled: boolean
+          access_note: string | null
           active: boolean
           avatar_url: string | null
           bio: string | null
@@ -902,9 +907,14 @@ export type Database = {
           gym_id: string | null
           id: string
           phone: string | null
+          unit_distance: string
+          unit_length: string
+          unit_weight: string
           updated_at: string
         }
         Insert: {
+          access_enabled?: boolean
+          access_note?: string | null
           active?: boolean
           avatar_url?: string | null
           bio?: string | null
@@ -917,9 +927,14 @@ export type Database = {
           gym_id?: string | null
           id: string
           phone?: string | null
+          unit_distance?: string
+          unit_length?: string
+          unit_weight?: string
           updated_at?: string
         }
         Update: {
+          access_enabled?: boolean
+          access_note?: string | null
           active?: boolean
           avatar_url?: string | null
           bio?: string | null
@@ -932,6 +947,9 @@ export type Database = {
           gym_id?: string | null
           id?: string
           phone?: string | null
+          unit_distance?: string
+          unit_length?: string
+          unit_weight?: string
           updated_at?: string
         }
         Relationships: [
@@ -1747,6 +1765,7 @@ export type Database = {
         | "confirmada"
         | "cancelada"
         | "completada"
+        | "no_asistio"
       checkin_status: "pendiente" | "completado" | "revisado"
       client_status: "activo" | "inactivo" | "pausado" | "finalizado"
       payment_status: "activo" | "pendiente" | "vencido" | "cancelado"
@@ -1916,6 +1935,7 @@ export const Constants = {
         "confirmada",
         "cancelada",
         "completada",
+        "no_asistio",
       ],
       checkin_status: ["pendiente", "completado", "revisado"],
       client_status: ["activo", "inactivo", "pausado", "finalizado"],
