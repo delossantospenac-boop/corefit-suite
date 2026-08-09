@@ -234,7 +234,7 @@ function PlansPage() {
         }}
         editing={editing}
         busy={upsert.isPending}
-        onSubmit={(values) => upsert.mutate({ ...values, id: editing?.id })}
+        onSubmit={(values) => upsert.mutate({ ...values, ...(editing?.id ? { id: editing.id } : {}) })}
       />
     </div>
   );
