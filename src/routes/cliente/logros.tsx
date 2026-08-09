@@ -65,7 +65,12 @@ function Logros() {
             ) : (
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
                 {unlocked.map((a) => (
-                  <AchievementCard key={a.id} achievement={a} earnedAt={earnedMap.get(a.id)} />
+                  <AchievementCard
+                    key={a.id}
+                    achievement={a}
+                    {...(earnedMap.get(a.id) ? { earnedAt: earnedMap.get(a.id)! } : {})}
+                  />
+
                 ))}
               </div>
             )}
