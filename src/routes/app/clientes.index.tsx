@@ -335,6 +335,7 @@ export function ClientDialog({
   onSubmit,
   busy,
   initial,
+  allowAccess,
   title = "Nuevo cliente",
 }: {
   open: boolean;
@@ -342,6 +343,7 @@ export function ClientDialog({
   onSubmit: (values: z.infer<typeof clientSchema>) => void;
   busy?: boolean;
   initial?: Partial<ClientRow>;
+  allowAccess?: boolean;
   title?: string;
 }) {
   const [values, setValues] = useState({
@@ -355,7 +357,10 @@ export function ClientDialog({
     goal: initial?.goal ?? "",
     status: (initial?.status ?? "activo") as ClientRow["status"],
     notes: initial?.notes ?? "",
+    create_access: false,
+    access_password: "",
   });
+
   const [error, setError] = useState<string | null>(null);
 
   function set<K extends keyof typeof values>(key: K, value: (typeof values)[K]) {
