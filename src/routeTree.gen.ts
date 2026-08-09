@@ -25,6 +25,7 @@ import { Route as ClienteRutinaRouteImport } from './routes/cliente/rutina'
 import { Route as AppClientesIndexRouteImport } from './routes/app/clientes.index'
 import { Route as AppClientesClientIdRouteImport } from './routes/app/clientes.$clientId'
 import { Route as AppRutinasIndexRouteImport } from './routes/app/rutinas.index'
+import { Route as ClienteEntrenarDayIdRouteImport } from './routes/cliente/entrenar.$dayId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -106,6 +107,11 @@ const AppRutinasIndexRoute = AppRutinasIndexRouteImport.update({
   path: '/rutinas/',
   getParentRoute: () => AppRouteRoute,
 } as any)
+const ClienteEntrenarDayIdRoute = ClienteEntrenarDayIdRouteImport.update({
+  id: '/entrenar/$dayId',
+  path: '/entrenar/$dayId',
+  getParentRoute: () => ClienteRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -122,6 +128,7 @@ export interface FileRoutesByFullPath {
   '/app/': typeof AppIndexRoute
   '/cliente/': typeof ClienteIndexRoute
   '/app/clientes/$clientId': typeof AppClientesClientIdRoute
+  '/cliente/entrenar/$dayId': typeof ClienteEntrenarDayIdRoute
   '/app/clientes/': typeof AppClientesIndexRoute
   '/app/rutinas/': typeof AppRutinasIndexRoute
 }
@@ -137,6 +144,7 @@ export interface FileRoutesByTo {
   '/app': typeof AppIndexRoute
   '/cliente': typeof ClienteIndexRoute
   '/app/clientes/$clientId': typeof AppClientesClientIdRoute
+  '/cliente/entrenar/$dayId': typeof ClienteEntrenarDayIdRoute
   '/app/clientes': typeof AppClientesIndexRoute
   '/app/rutinas': typeof AppRutinasIndexRoute
 }
@@ -156,6 +164,7 @@ export interface FileRoutesById {
   '/app/': typeof AppIndexRoute
   '/cliente/': typeof ClienteIndexRoute
   '/app/clientes/$clientId': typeof AppClientesClientIdRoute
+  '/cliente/entrenar/$dayId': typeof ClienteEntrenarDayIdRoute
   '/app/clientes/': typeof AppClientesIndexRoute
   '/app/rutinas/': typeof AppRutinasIndexRoute
 }
@@ -176,6 +185,7 @@ export interface FileRouteTypes {
     | '/app/'
     | '/cliente/'
     | '/app/clientes/$clientId'
+    | '/cliente/entrenar/$dayId'
     | '/app/clientes/'
     | '/app/rutinas/'
   fileRoutesByTo: FileRoutesByTo
@@ -191,6 +201,7 @@ export interface FileRouteTypes {
     | '/app'
     | '/cliente'
     | '/app/clientes/$clientId'
+    | '/cliente/entrenar/$dayId'
     | '/app/clientes'
     | '/app/rutinas'
   id:
@@ -209,6 +220,7 @@ export interface FileRouteTypes {
     | '/app/'
     | '/cliente/'
     | '/app/clientes/$clientId'
+    | '/cliente/entrenar/$dayId'
     | '/app/clientes/'
     | '/app/rutinas/'
   fileRoutesById: FileRoutesById
@@ -336,6 +348,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppRutinasIndexRouteImport
       parentRoute: typeof AppRouteRoute
     }
+    '/cliente/entrenar/$dayId': {
+      id: '/cliente/entrenar/$dayId'
+      path: '/entrenar/$dayId'
+      fullPath: '/cliente/entrenar/$dayId'
+      preLoaderRoute: typeof ClienteEntrenarDayIdRouteImport
+      parentRoute: typeof ClienteRouteRoute
+    }
   }
 }
 
@@ -378,11 +397,13 @@ const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(
 interface ClienteRouteRouteChildren {
   ClienteRutinaRoute: typeof ClienteRutinaRoute
   ClienteIndexRoute: typeof ClienteIndexRoute
+  ClienteEntrenarDayIdRoute: typeof ClienteEntrenarDayIdRoute
 }
 
 const ClienteRouteRouteChildren: ClienteRouteRouteChildren = {
   ClienteRutinaRoute: ClienteRutinaRoute,
   ClienteIndexRoute: ClienteIndexRoute,
+  ClienteEntrenarDayIdRoute: ClienteEntrenarDayIdRoute,
 }
 
 const ClienteRouteRouteWithChildren = ClienteRouteRoute._addFileChildren(

@@ -253,7 +253,7 @@ function SubscriptionsPage() {
         plans={plans}
         editing={editing}
         busy={upsert.isPending}
-        onSubmit={(values) => upsert.mutate({ ...values, id: editing?.id })}
+        onSubmit={(values) => upsert.mutate({ ...values, ...(editing?.id ? { id: editing.id } : {}) })}
       />
     </div>
   );
