@@ -18,6 +18,7 @@ import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as AdminClientesRouteImport } from './routes/admin/clientes'
 import { Route as AdminEntrenadoresRouteImport } from './routes/admin/entrenadores'
+import { Route as AdminSuscripcionesRouteImport } from './routes/admin/suscripciones'
 import { Route as AppIndexRouteImport } from './routes/app/index'
 import { Route as ClienteIndexRouteImport } from './routes/cliente/index'
 import { Route as ClienteRutinaRouteImport } from './routes/cliente/rutina'
@@ -70,6 +71,11 @@ const AdminEntrenadoresRoute = AdminEntrenadoresRouteImport.update({
   path: '/entrenadores',
   getParentRoute: () => AdminRouteRoute,
 } as any)
+const AdminSuscripcionesRoute = AdminSuscripcionesRouteImport.update({
+  id: '/suscripciones',
+  path: '/suscripciones',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
 const AppIndexRoute = AppIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -110,6 +116,7 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/admin/clientes': typeof AdminClientesRoute
   '/admin/entrenadores': typeof AdminEntrenadoresRoute
+  '/admin/suscripciones': typeof AdminSuscripcionesRoute
   '/cliente/rutina': typeof ClienteRutinaRoute
   '/admin/': typeof AdminIndexRoute
   '/app/': typeof AppIndexRoute
@@ -124,6 +131,7 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/admin/clientes': typeof AdminClientesRoute
   '/admin/entrenadores': typeof AdminEntrenadoresRoute
+  '/admin/suscripciones': typeof AdminSuscripcionesRoute
   '/cliente/rutina': typeof ClienteRutinaRoute
   '/admin': typeof AdminIndexRoute
   '/app': typeof AppIndexRoute
@@ -142,6 +150,7 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/admin/clientes': typeof AdminClientesRoute
   '/admin/entrenadores': typeof AdminEntrenadoresRoute
+  '/admin/suscripciones': typeof AdminSuscripcionesRoute
   '/cliente/rutina': typeof ClienteRutinaRoute
   '/admin/': typeof AdminIndexRoute
   '/app/': typeof AppIndexRoute
@@ -161,6 +170,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/admin/clientes'
     | '/admin/entrenadores'
+    | '/admin/suscripciones'
     | '/cliente/rutina'
     | '/admin/'
     | '/app/'
@@ -175,6 +185,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/admin/clientes'
     | '/admin/entrenadores'
+    | '/admin/suscripciones'
     | '/cliente/rutina'
     | '/admin'
     | '/app'
@@ -192,6 +203,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/admin/clientes'
     | '/admin/entrenadores'
+    | '/admin/suscripciones'
     | '/cliente/rutina'
     | '/admin/'
     | '/app/'
@@ -275,6 +287,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminEntrenadoresRouteImport
       parentRoute: typeof AdminRouteRoute
     }
+    '/admin/suscripciones': {
+      id: '/admin/suscripciones'
+      path: '/suscripciones'
+      fullPath: '/admin/suscripciones'
+      preLoaderRoute: typeof AdminSuscripcionesRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
     '/app/': {
       id: '/app/'
       path: '/'
@@ -323,12 +342,14 @@ declare module '@tanstack/react-router' {
 interface AdminRouteRouteChildren {
   AdminClientesRoute: typeof AdminClientesRoute
   AdminEntrenadoresRoute: typeof AdminEntrenadoresRoute
+  AdminSuscripcionesRoute: typeof AdminSuscripcionesRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
 const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminClientesRoute: AdminClientesRoute,
   AdminEntrenadoresRoute: AdminEntrenadoresRoute,
+  AdminSuscripcionesRoute: AdminSuscripcionesRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
 
