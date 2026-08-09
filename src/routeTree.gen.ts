@@ -23,9 +23,13 @@ import { Route as AdminSuscripcionesRouteImport } from './routes/admin/suscripci
 import { Route as AppIndexRouteImport } from './routes/app/index'
 import { Route as AppEjerciciosRouteImport } from './routes/app/ejercicios'
 import { Route as ClienteIndexRouteImport } from './routes/cliente/index'
+import { Route as ClienteChatRouteImport } from './routes/cliente/chat'
 import { Route as ClienteClasesRouteImport } from './routes/cliente/clases'
 import { Route as ClienteEvaluacionesRouteImport } from './routes/cliente/evaluaciones'
 import { Route as ClienteFotosRouteImport } from './routes/cliente/fotos'
+import { Route as ClienteHabitosRouteImport } from './routes/cliente/habitos'
+import { Route as ClienteLogrosRouteImport } from './routes/cliente/logros'
+import { Route as ClienteNutricionRouteImport } from './routes/cliente/nutricion'
 import { Route as ClienteProgresoRouteImport } from './routes/cliente/progreso'
 import { Route as ClienteRutinaRouteImport } from './routes/cliente/rutina'
 import { Route as AppClientesIndexRouteImport } from './routes/app/clientes.index'
@@ -104,6 +108,11 @@ const ClienteIndexRoute = ClienteIndexRouteImport.update({
   path: '/',
   getParentRoute: () => ClienteRouteRoute,
 } as any)
+const ClienteChatRoute = ClienteChatRouteImport.update({
+  id: '/chat',
+  path: '/chat',
+  getParentRoute: () => ClienteRouteRoute,
+} as any)
 const ClienteClasesRoute = ClienteClasesRouteImport.update({
   id: '/clases',
   path: '/clases',
@@ -117,6 +126,21 @@ const ClienteEvaluacionesRoute = ClienteEvaluacionesRouteImport.update({
 const ClienteFotosRoute = ClienteFotosRouteImport.update({
   id: '/fotos',
   path: '/fotos',
+  getParentRoute: () => ClienteRouteRoute,
+} as any)
+const ClienteHabitosRoute = ClienteHabitosRouteImport.update({
+  id: '/habitos',
+  path: '/habitos',
+  getParentRoute: () => ClienteRouteRoute,
+} as any)
+const ClienteLogrosRoute = ClienteLogrosRouteImport.update({
+  id: '/logros',
+  path: '/logros',
+  getParentRoute: () => ClienteRouteRoute,
+} as any)
+const ClienteNutricionRoute = ClienteNutricionRouteImport.update({
+  id: '/nutricion',
+  path: '/nutricion',
   getParentRoute: () => ClienteRouteRoute,
 } as any)
 const ClienteProgresoRoute = ClienteProgresoRouteImport.update({
@@ -167,9 +191,13 @@ export interface FileRoutesByFullPath {
   '/admin/planes': typeof AdminPlanesRoute
   '/admin/suscripciones': typeof AdminSuscripcionesRoute
   '/app/ejercicios': typeof AppEjerciciosRoute
+  '/cliente/chat': typeof ClienteChatRoute
   '/cliente/clases': typeof ClienteClasesRoute
   '/cliente/evaluaciones': typeof ClienteEvaluacionesRoute
   '/cliente/fotos': typeof ClienteFotosRoute
+  '/cliente/habitos': typeof ClienteHabitosRoute
+  '/cliente/logros': typeof ClienteLogrosRoute
+  '/cliente/nutricion': typeof ClienteNutricionRoute
   '/cliente/progreso': typeof ClienteProgresoRoute
   '/cliente/rutina': typeof ClienteRutinaRoute
   '/admin/': typeof AdminIndexRoute
@@ -190,9 +218,13 @@ export interface FileRoutesByTo {
   '/admin/planes': typeof AdminPlanesRoute
   '/admin/suscripciones': typeof AdminSuscripcionesRoute
   '/app/ejercicios': typeof AppEjerciciosRoute
+  '/cliente/chat': typeof ClienteChatRoute
   '/cliente/clases': typeof ClienteClasesRoute
   '/cliente/evaluaciones': typeof ClienteEvaluacionesRoute
   '/cliente/fotos': typeof ClienteFotosRoute
+  '/cliente/habitos': typeof ClienteHabitosRoute
+  '/cliente/logros': typeof ClienteLogrosRoute
+  '/cliente/nutricion': typeof ClienteNutricionRoute
   '/cliente/progreso': typeof ClienteProgresoRoute
   '/cliente/rutina': typeof ClienteRutinaRoute
   '/admin': typeof AdminIndexRoute
@@ -217,9 +249,13 @@ export interface FileRoutesById {
   '/admin/planes': typeof AdminPlanesRoute
   '/admin/suscripciones': typeof AdminSuscripcionesRoute
   '/app/ejercicios': typeof AppEjerciciosRoute
+  '/cliente/chat': typeof ClienteChatRoute
   '/cliente/clases': typeof ClienteClasesRoute
   '/cliente/evaluaciones': typeof ClienteEvaluacionesRoute
   '/cliente/fotos': typeof ClienteFotosRoute
+  '/cliente/habitos': typeof ClienteHabitosRoute
+  '/cliente/logros': typeof ClienteLogrosRoute
+  '/cliente/nutricion': typeof ClienteNutricionRoute
   '/cliente/progreso': typeof ClienteProgresoRoute
   '/cliente/rutina': typeof ClienteRutinaRoute
   '/admin/': typeof AdminIndexRoute
@@ -245,9 +281,13 @@ export interface FileRouteTypes {
     | '/admin/planes'
     | '/admin/suscripciones'
     | '/app/ejercicios'
+    | '/cliente/chat'
     | '/cliente/clases'
     | '/cliente/evaluaciones'
     | '/cliente/fotos'
+    | '/cliente/habitos'
+    | '/cliente/logros'
+    | '/cliente/nutricion'
     | '/cliente/progreso'
     | '/cliente/rutina'
     | '/admin/'
@@ -268,9 +308,13 @@ export interface FileRouteTypes {
     | '/admin/planes'
     | '/admin/suscripciones'
     | '/app/ejercicios'
+    | '/cliente/chat'
     | '/cliente/clases'
     | '/cliente/evaluaciones'
     | '/cliente/fotos'
+    | '/cliente/habitos'
+    | '/cliente/logros'
+    | '/cliente/nutricion'
     | '/cliente/progreso'
     | '/cliente/rutina'
     | '/admin'
@@ -294,9 +338,13 @@ export interface FileRouteTypes {
     | '/admin/planes'
     | '/admin/suscripciones'
     | '/app/ejercicios'
+    | '/cliente/chat'
     | '/cliente/clases'
     | '/cliente/evaluaciones'
     | '/cliente/fotos'
+    | '/cliente/habitos'
+    | '/cliente/logros'
+    | '/cliente/nutricion'
     | '/cliente/progreso'
     | '/cliente/rutina'
     | '/admin/'
@@ -418,6 +466,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ClienteIndexRouteImport
       parentRoute: typeof ClienteRouteRoute
     }
+    '/cliente/chat': {
+      id: '/cliente/chat'
+      path: '/chat'
+      fullPath: '/cliente/chat'
+      preLoaderRoute: typeof ClienteChatRouteImport
+      parentRoute: typeof ClienteRouteRoute
+    }
     '/cliente/clases': {
       id: '/cliente/clases'
       path: '/clases'
@@ -437,6 +492,27 @@ declare module '@tanstack/react-router' {
       path: '/fotos'
       fullPath: '/cliente/fotos'
       preLoaderRoute: typeof ClienteFotosRouteImport
+      parentRoute: typeof ClienteRouteRoute
+    }
+    '/cliente/habitos': {
+      id: '/cliente/habitos'
+      path: '/habitos'
+      fullPath: '/cliente/habitos'
+      preLoaderRoute: typeof ClienteHabitosRouteImport
+      parentRoute: typeof ClienteRouteRoute
+    }
+    '/cliente/logros': {
+      id: '/cliente/logros'
+      path: '/logros'
+      fullPath: '/cliente/logros'
+      preLoaderRoute: typeof ClienteLogrosRouteImport
+      parentRoute: typeof ClienteRouteRoute
+    }
+    '/cliente/nutricion': {
+      id: '/cliente/nutricion'
+      path: '/nutricion'
+      fullPath: '/cliente/nutricion'
+      preLoaderRoute: typeof ClienteNutricionRouteImport
       parentRoute: typeof ClienteRouteRoute
     }
     '/cliente/progreso': {
@@ -534,9 +610,13 @@ const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(
 )
 
 interface ClienteRouteRouteChildren {
+  ClienteChatRoute: typeof ClienteChatRoute
   ClienteClasesRoute: typeof ClienteClasesRoute
   ClienteEvaluacionesRoute: typeof ClienteEvaluacionesRoute
   ClienteFotosRoute: typeof ClienteFotosRoute
+  ClienteHabitosRoute: typeof ClienteHabitosRoute
+  ClienteLogrosRoute: typeof ClienteLogrosRoute
+  ClienteNutricionRoute: typeof ClienteNutricionRoute
   ClienteProgresoRoute: typeof ClienteProgresoRoute
   ClienteRutinaRoute: typeof ClienteRutinaRoute
   ClienteIndexRoute: typeof ClienteIndexRoute
@@ -544,9 +624,13 @@ interface ClienteRouteRouteChildren {
 }
 
 const ClienteRouteRouteChildren: ClienteRouteRouteChildren = {
+  ClienteChatRoute: ClienteChatRoute,
   ClienteClasesRoute: ClienteClasesRoute,
   ClienteEvaluacionesRoute: ClienteEvaluacionesRoute,
   ClienteFotosRoute: ClienteFotosRoute,
+  ClienteHabitosRoute: ClienteHabitosRoute,
+  ClienteLogrosRoute: ClienteLogrosRoute,
+  ClienteNutricionRoute: ClienteNutricionRoute,
   ClienteProgresoRoute: ClienteProgresoRoute,
   ClienteRutinaRoute: ClienteRutinaRoute,
   ClienteIndexRoute: ClienteIndexRoute,
