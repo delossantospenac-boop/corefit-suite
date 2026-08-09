@@ -18,6 +18,7 @@ import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as AdminClientesRouteImport } from './routes/admin/clientes'
 import { Route as AdminEntrenadoresRouteImport } from './routes/admin/entrenadores'
+import { Route as AdminPlanesRouteImport } from './routes/admin/planes'
 import { Route as AdminSuscripcionesRouteImport } from './routes/admin/suscripciones'
 import { Route as AppIndexRouteImport } from './routes/app/index'
 import { Route as ClienteIndexRouteImport } from './routes/cliente/index'
@@ -72,6 +73,11 @@ const AdminClientesRoute = AdminClientesRouteImport.update({
 const AdminEntrenadoresRoute = AdminEntrenadoresRouteImport.update({
   id: '/entrenadores',
   path: '/entrenadores',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminPlanesRoute = AdminPlanesRouteImport.update({
+  id: '/planes',
+  path: '/planes',
   getParentRoute: () => AdminRouteRoute,
 } as any)
 const AdminSuscripcionesRoute = AdminSuscripcionesRouteImport.update({
@@ -134,6 +140,7 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/admin/clientes': typeof AdminClientesRoute
   '/admin/entrenadores': typeof AdminEntrenadoresRoute
+  '/admin/planes': typeof AdminPlanesRoute
   '/admin/suscripciones': typeof AdminSuscripcionesRoute
   '/cliente/progreso': typeof ClienteProgresoRoute
   '/cliente/rutina': typeof ClienteRutinaRoute
@@ -152,6 +159,7 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/admin/clientes': typeof AdminClientesRoute
   '/admin/entrenadores': typeof AdminEntrenadoresRoute
+  '/admin/planes': typeof AdminPlanesRoute
   '/admin/suscripciones': typeof AdminSuscripcionesRoute
   '/cliente/progreso': typeof ClienteProgresoRoute
   '/cliente/rutina': typeof ClienteRutinaRoute
@@ -174,6 +182,7 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/admin/clientes': typeof AdminClientesRoute
   '/admin/entrenadores': typeof AdminEntrenadoresRoute
+  '/admin/planes': typeof AdminPlanesRoute
   '/admin/suscripciones': typeof AdminSuscripcionesRoute
   '/cliente/progreso': typeof ClienteProgresoRoute
   '/cliente/rutina': typeof ClienteRutinaRoute
@@ -197,6 +206,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/admin/clientes'
     | '/admin/entrenadores'
+    | '/admin/planes'
     | '/admin/suscripciones'
     | '/cliente/progreso'
     | '/cliente/rutina'
@@ -215,6 +225,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/admin/clientes'
     | '/admin/entrenadores'
+    | '/admin/planes'
     | '/admin/suscripciones'
     | '/cliente/progreso'
     | '/cliente/rutina'
@@ -236,6 +247,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/admin/clientes'
     | '/admin/entrenadores'
+    | '/admin/planes'
     | '/admin/suscripciones'
     | '/cliente/progreso'
     | '/cliente/rutina'
@@ -323,6 +335,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminEntrenadoresRouteImport
       parentRoute: typeof AdminRouteRoute
     }
+    '/admin/planes': {
+      id: '/admin/planes'
+      path: '/planes'
+      fullPath: '/admin/planes'
+      preLoaderRoute: typeof AdminPlanesRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
     '/admin/suscripciones': {
       id: '/admin/suscripciones'
       path: '/suscripciones'
@@ -399,6 +418,7 @@ declare module '@tanstack/react-router' {
 interface AdminRouteRouteChildren {
   AdminClientesRoute: typeof AdminClientesRoute
   AdminEntrenadoresRoute: typeof AdminEntrenadoresRoute
+  AdminPlanesRoute: typeof AdminPlanesRoute
   AdminSuscripcionesRoute: typeof AdminSuscripcionesRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
@@ -406,6 +426,7 @@ interface AdminRouteRouteChildren {
 const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminClientesRoute: AdminClientesRoute,
   AdminEntrenadoresRoute: AdminEntrenadoresRoute,
+  AdminPlanesRoute: AdminPlanesRoute,
   AdminSuscripcionesRoute: AdminSuscripcionesRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
