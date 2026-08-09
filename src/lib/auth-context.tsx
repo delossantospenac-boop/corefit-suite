@@ -3,6 +3,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import type { Session, User } from "@supabase/supabase-js";
 
 import { supabase } from "@/integrations/supabase/client";
+import { DEFAULT_UNITS, type DistanceUnit, type LengthUnit, type UnitPrefs, type WeightUnit } from "@/lib/units";
 
 export type AppRole = "super_admin" | "gym_admin" | "trainer" | "client";
 
@@ -18,6 +19,11 @@ export type Profile = {
   brand_logo_url: string | null;
   bio: string | null;
   active: boolean;
+  access_enabled: boolean;
+  access_note: string | null;
+  unit_weight: string;
+  unit_length: string;
+  unit_distance: string;
 };
 
 type AuthState = {
@@ -27,6 +33,8 @@ type AuthState = {
   profile: Profile | null;
   role: AppRole | null;
   clientId: string | null;
+  units: UnitPrefs;
+  subscriptionStatus: string | null;
   refresh: () => Promise<void>;
   signOut: () => Promise<void>;
 };
@@ -39,12 +47,35 @@ export function homeForRole(role: AppRole | null): string {
   return "/app";
 }
 
+/** Motivo por el que el acceso está bloqueado, o null si puede entrar. */
+export function accessBlockReason(
+  role: AppRole | null,
+  profile: Profile | null,
+  subscriptionStatus: string | null,
+): string | null {
+  if (!role || role === "super_admin") return null;
+  if (profile && profile.access_enabled === false) {
+    return (
+      profile.access_note ||
+      "Tu acceso a la plataforma está actualmente suspendido. Contacta con el administrador."
+    );
+  }
+  if (role === "trainer" || role === "gym_admin") {
+    if (subscriptionStatus === "vencido")
+      return "Tu suscripción está vencida. Contacta con el administrador para reactivar tu acceso.";
+    if (subscriptionStatus === "cancelado")
+      return "Tu suscripción ha sido cancelada. Contacta con el administrador para reactivar tu acceso.";
+  }
+  return null;
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const queryClient = useQueryClient();
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [role, setRole] = useState<AppRole | null>(null);
   const [clientId, setClientId] = useState<string | null>(null);
+  const [subscriptionStatus, setSubscriptionStatus] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   async function loadContext(uid: string | undefined) {
@@ -52,18 +83,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setProfile(null);
       setRole(null);
       setClientId(null);
+      setSubscriptionStatus(null);
       return;
     }
-    const [{ data: prof }, { data: roles }, { data: client }] = await Promise.all([
+    const [{ data: prof }, { data: roles }, { data: client }, { data: sub }] = await Promise.all([
       supabase.from("profiles").select("*").eq("id", uid).maybeSingle(),
       supabase.from("user_roles").select("role").eq("user_id", uid),
       supabase.from("clients").select("id").eq("user_id", uid).limit(1).maybeSingle(),
+      supabase
+        .from("trainer_subscriptions")
+        .select("status")
+        .eq("trainer_id", uid)
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle(),
     ]);
     setProfile((prof as Profile | null) ?? null);
     const list = (roles ?? []).map((r) => r.role as AppRole);
     const priority: AppRole[] = ["super_admin", "gym_admin", "trainer", "client"];
     setRole(priority.find((r) => list.includes(r)) ?? null);
     setClientId((client as { id: string } | null)?.id ?? null);
+    setSubscriptionStatus((sub as { status: string } | null)?.status ?? null);
   }
 
   useEffect(() => {
@@ -95,6 +135,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
   }, [queryClient]);
 
+  const units: UnitPrefs = profile
+    ? {
+        weight: (profile.unit_weight as WeightUnit) ?? DEFAULT_UNITS.weight,
+        length: (profile.unit_length as LengthUnit) ?? DEFAULT_UNITS.length,
+        distance: (profile.unit_distance as DistanceUnit) ?? DEFAULT_UNITS.distance,
+      }
+    : DEFAULT_UNITS;
+
   const value: AuthState = {
     loading,
     session,
@@ -102,6 +150,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     profile,
     role,
     clientId,
+    units,
+    subscriptionStatus,
     refresh: async () => {
       await loadContext(session?.user?.id);
     },
@@ -112,6 +162,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setProfile(null);
       setRole(null);
       setClientId(null);
+      setSubscriptionStatus(null);
     },
   };
 
@@ -122,4 +173,8 @@ export function useAuth(): AuthState {
   const ctx = useContext(AuthContext);
   if (!ctx) throw new Error("useAuth debe usarse dentro de AuthProvider");
   return ctx;
+}
+
+export function useUnits(): UnitPrefs {
+  return useAuth().units;
 }

@@ -1,9 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
-import { Archive, Plus, Search, UserPlus, Users } from "lucide-react";
+import { Archive, KeyRound, Plus, Search, UserPlus, Users } from "lucide-react";
 import { toast } from "sonner";
 import { z } from "zod";
+
 
 import { EmptyState, ListSkeleton, PageHeader } from "@/components/fitcore/primitives";
 import { Badge } from "@/components/ui/badge";
@@ -25,9 +27,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
+import { createClientAccess } from "@/lib/admin.functions";
 import { useAuth } from "@/lib/auth-context";
+
 import {
   ageFrom,
   daysSince,
@@ -54,7 +59,10 @@ const clientSchema = z.object({
   goal: z.string().trim().max(200).optional(),
   status: z.enum(["activo", "inactivo", "pausado", "finalizado"]),
   notes: z.string().trim().max(1000).optional(),
+  create_access: z.boolean().optional(),
+  access_password: z.union([z.string().min(8, "Mínimo 8 caracteres").max(72), z.literal("")]).optional(),
 });
+
 
 type SortKey = "recientes" | "nombre" | "actividad";
 
@@ -66,6 +74,8 @@ function ClientsPage() {
   const [sort, setSort] = useState<SortKey>("recientes");
   const [showArchived, setShowArchived] = useState(false);
   const [open, setOpen] = useState(false);
+  const [creds, setCreds] = useState<{ email: string; password: string } | null>(null);
+  const createAccess = useServerFn(createClientAccess);
 
   const clientsQuery = useQuery({
     queryKey: ["clients", showArchived],
@@ -75,28 +85,47 @@ function ClientsPage() {
   const create = useMutation({
     mutationFn: async (values: z.infer<typeof clientSchema>) => {
       if (!user) throw new Error("Sesión no válida");
-      const { error } = await supabase.from("clients").insert({
-        trainer_id: user.id,
-        full_name: values.full_name,
-        email: values.email || null,
-        phone: values.phone || null,
-        sex: values.sex || null,
-        birth_date: values.birth_date || null,
-        height_cm: values.height_cm ? Number(values.height_cm) : null,
-        weight_kg: values.weight_kg ? Number(values.weight_kg) : null,
-        goal: values.goal || null,
-        status: values.status,
-        notes: values.notes || null,
-      });
+      const { data, error } = await supabase
+        .from("clients")
+        .insert({
+          trainer_id: user.id,
+          full_name: values.full_name,
+          email: values.email || null,
+          phone: values.phone || null,
+          sex: values.sex || null,
+          birth_date: values.birth_date || null,
+          height_cm: values.height_cm ? Number(values.height_cm) : null,
+          weight_kg: values.weight_kg ? Number(values.weight_kg) : null,
+          goal: values.goal || null,
+          status: values.status,
+          notes: values.notes || null,
+        })
+        .select("id")
+        .single();
       if (error) throw error;
+
+      if (values.create_access) {
+        if (!values.email) throw new Error("Necesitas un correo para crear el acceso del cliente");
+        const res = await createAccess({
+          data: {
+            clientId: data.id,
+            email: values.email,
+            ...(values.access_password ? { password: values.access_password } : {}),
+          },
+        });
+        return { email: res.email, password: res.password };
+      }
+      return null;
     },
-    onSuccess: () => {
-      toast.success("Cliente creado");
+    onSuccess: (result) => {
+      toast.success(result ? "Cliente y acceso creados" : "Cliente creado");
       setOpen(false);
+      if (result) setCreds(result);
       void queryClient.invalidateQueries({ queryKey: ["clients"] });
     },
     onError: (e: Error) => toast.error(e.message),
   });
+
 
   const clients = clientsQuery.data ?? [];
 
@@ -206,8 +235,44 @@ function ClientsPage() {
         open={open}
         onOpenChange={setOpen}
         busy={create.isPending}
+        allowAccess
         onSubmit={(values) => create.mutate(values)}
       />
+
+      <Dialog open={!!creds} onOpenChange={(v) => !v && setCreds(null)}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Acceso creado</DialogTitle>
+            <DialogDescription>
+              Comparte estas credenciales con tu cliente. La contraseña no volverá a mostrarse.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3">
+            <div className="card-surface p-3">
+              <p className="text-[10px] uppercase tracking-widest text-muted-foreground">Correo</p>
+              <p className="break-all font-medium">{creds?.email}</p>
+            </div>
+            <div className="card-surface p-3">
+              <p className="text-[10px] uppercase tracking-widest text-muted-foreground">
+                Contraseña temporal
+              </p>
+              <p className="break-all font-mono text-neon">{creds?.password}</p>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              type="button"
+              onClick={() => {
+                void navigator.clipboard.writeText(`${creds?.email} / ${creds?.password}`);
+                toast.success("Credenciales copiadas");
+              }}
+            >
+              <KeyRound className="mr-2 h-4 w-4" /> Copiar
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
     </div>
   );
 }
@@ -270,6 +335,7 @@ export function ClientDialog({
   onSubmit,
   busy,
   initial,
+  allowAccess,
   title = "Nuevo cliente",
 }: {
   open: boolean;
@@ -277,6 +343,7 @@ export function ClientDialog({
   onSubmit: (values: z.infer<typeof clientSchema>) => void;
   busy?: boolean;
   initial?: Partial<ClientRow>;
+  allowAccess?: boolean;
   title?: string;
 }) {
   const [values, setValues] = useState({
@@ -290,7 +357,10 @@ export function ClientDialog({
     goal: initial?.goal ?? "",
     status: (initial?.status ?? "activo") as ClientRow["status"],
     notes: initial?.notes ?? "",
+    create_access: false,
+    access_password: "",
   });
+
   const [error, setError] = useState<string | null>(null);
 
   function set<K extends keyof typeof values>(key: K, value: (typeof values)[K]) {
@@ -424,6 +494,34 @@ export function ClientDialog({
               maxLength={1000}
             />
           </div>
+          {allowAccess && (
+            <div className="card-surface space-y-3 p-3">
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <p className="text-sm font-medium">Crear acceso al panel del cliente</p>
+                  <p className="text-xs text-muted-foreground">
+                    Se creará una cuenta con el correo indicado para que pueda entrenar desde su móvil.
+                  </p>
+                </div>
+                <Switch
+                  checked={values.create_access}
+                  onCheckedChange={(v) => set("create_access", v)}
+                />
+              </div>
+              {values.create_access && (
+                <div className="space-y-2">
+                  <Label htmlFor="access_password">Contraseña temporal (opcional)</Label>
+                  <Input
+                    id="access_password"
+                    value={values.access_password}
+                    onChange={(e) => set("access_password", e.target.value)}
+                    placeholder="Se genera automáticamente si lo dejas vacío"
+                  />
+                </div>
+              )}
+            </div>
+          )}
+
           {error && (
             <p className="rounded-lg border border-destructive/40 bg-destructive/10 px-3 py-2 text-sm text-destructive">
               {error}
