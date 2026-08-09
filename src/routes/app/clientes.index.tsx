@@ -235,8 +235,44 @@ function ClientsPage() {
         open={open}
         onOpenChange={setOpen}
         busy={create.isPending}
+        allowAccess
         onSubmit={(values) => create.mutate(values)}
       />
+
+      <Dialog open={!!creds} onOpenChange={(v) => !v && setCreds(null)}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Acceso creado</DialogTitle>
+            <DialogDescription>
+              Comparte estas credenciales con tu cliente. La contraseña no volverá a mostrarse.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3">
+            <div className="card-surface p-3">
+              <p className="text-[10px] uppercase tracking-widest text-muted-foreground">Correo</p>
+              <p className="break-all font-medium">{creds?.email}</p>
+            </div>
+            <div className="card-surface p-3">
+              <p className="text-[10px] uppercase tracking-widest text-muted-foreground">
+                Contraseña temporal
+              </p>
+              <p className="break-all font-mono text-neon">{creds?.password}</p>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              type="button"
+              onClick={() => {
+                void navigator.clipboard.writeText(`${creds?.email} / ${creds?.password}`);
+                toast.success("Credenciales copiadas");
+              }}
+            >
+              <KeyRound className="mr-2 h-4 w-4" /> Copiar
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
     </div>
   );
 }
