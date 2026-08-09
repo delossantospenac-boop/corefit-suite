@@ -386,7 +386,11 @@ function TrainersPage() {
         target={denyTarget}
         onOpenChange={(v) => !v && setDenyTarget(null)}
         busy={access.isPending}
-        onConfirm={(note) => denyTarget && access.mutate({ userId: denyTarget.id, enabled: false, note })}
+        onConfirm={(note) =>
+          denyTarget &&
+          access.mutate({ userId: denyTarget.id, enabled: false, ...(note ? { note } : {}) })
+        }
+
       />
 
       <CredentialsDialog creds={createdCreds} onOpenChange={(v) => !v && setCreatedCreds(null)} />

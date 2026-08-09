@@ -19,8 +19,10 @@ import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as AdminEntrenadoresRouteImport } from './routes/admin/entrenadores'
 import { Route as AppIndexRouteImport } from './routes/app/index'
 import { Route as ClienteIndexRouteImport } from './routes/cliente/index'
+import { Route as ClienteRutinaRouteImport } from './routes/cliente/rutina'
 import { Route as AppClientesIndexRouteImport } from './routes/app/clientes.index'
 import { Route as AppClientesClientIdRouteImport } from './routes/app/clientes.$clientId'
+import { Route as AppRutinasIndexRouteImport } from './routes/app/rutinas.index'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -72,6 +74,11 @@ const ClienteIndexRoute = ClienteIndexRouteImport.update({
   path: '/',
   getParentRoute: () => ClienteRouteRoute,
 } as any)
+const ClienteRutinaRoute = ClienteRutinaRouteImport.update({
+  id: '/rutina',
+  path: '/rutina',
+  getParentRoute: () => ClienteRouteRoute,
+} as any)
 const AppClientesIndexRoute = AppClientesIndexRouteImport.update({
   id: '/clientes/',
   path: '/clientes/',
@@ -80,6 +87,11 @@ const AppClientesIndexRoute = AppClientesIndexRouteImport.update({
 const AppClientesClientIdRoute = AppClientesClientIdRouteImport.update({
   id: '/clientes/$clientId',
   path: '/clientes/$clientId',
+  getParentRoute: () => AppRouteRoute,
+} as any)
+const AppRutinasIndexRoute = AppRutinasIndexRouteImport.update({
+  id: '/rutinas/',
+  path: '/rutinas/',
   getParentRoute: () => AppRouteRoute,
 } as any)
 
@@ -91,22 +103,26 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/reset-password': typeof ResetPasswordRoute
   '/admin/entrenadores': typeof AdminEntrenadoresRoute
+  '/cliente/rutina': typeof ClienteRutinaRoute
   '/admin/': typeof AdminIndexRoute
   '/app/': typeof AppIndexRoute
   '/cliente/': typeof ClienteIndexRoute
   '/app/clientes/$clientId': typeof AppClientesClientIdRoute
   '/app/clientes/': typeof AppClientesIndexRoute
+  '/app/rutinas/': typeof AppRutinasIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/reset-password': typeof ResetPasswordRoute
   '/admin/entrenadores': typeof AdminEntrenadoresRoute
+  '/cliente/rutina': typeof ClienteRutinaRoute
   '/admin': typeof AdminIndexRoute
   '/app': typeof AppIndexRoute
   '/cliente': typeof ClienteIndexRoute
   '/app/clientes/$clientId': typeof AppClientesClientIdRoute
   '/app/clientes': typeof AppClientesIndexRoute
+  '/app/rutinas': typeof AppRutinasIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -117,11 +133,13 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/reset-password': typeof ResetPasswordRoute
   '/admin/entrenadores': typeof AdminEntrenadoresRoute
+  '/cliente/rutina': typeof ClienteRutinaRoute
   '/admin/': typeof AdminIndexRoute
   '/app/': typeof AppIndexRoute
   '/cliente/': typeof ClienteIndexRoute
   '/app/clientes/$clientId': typeof AppClientesClientIdRoute
   '/app/clientes/': typeof AppClientesIndexRoute
+  '/app/rutinas/': typeof AppRutinasIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -133,22 +151,26 @@ export interface FileRouteTypes {
     | '/auth'
     | '/reset-password'
     | '/admin/entrenadores'
+    | '/cliente/rutina'
     | '/admin/'
     | '/app/'
     | '/cliente/'
     | '/app/clientes/$clientId'
     | '/app/clientes/'
+    | '/app/rutinas/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/auth'
     | '/reset-password'
     | '/admin/entrenadores'
+    | '/cliente/rutina'
     | '/admin'
     | '/app'
     | '/cliente'
     | '/app/clientes/$clientId'
     | '/app/clientes'
+    | '/app/rutinas'
   id:
     | '__root__'
     | '/'
@@ -158,11 +180,13 @@ export interface FileRouteTypes {
     | '/auth'
     | '/reset-password'
     | '/admin/entrenadores'
+    | '/cliente/rutina'
     | '/admin/'
     | '/app/'
     | '/cliente/'
     | '/app/clientes/$clientId'
     | '/app/clientes/'
+    | '/app/rutinas/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -246,6 +270,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ClienteIndexRouteImport
       parentRoute: typeof ClienteRouteRoute
     }
+    '/cliente/rutina': {
+      id: '/cliente/rutina'
+      path: '/rutina'
+      fullPath: '/cliente/rutina'
+      preLoaderRoute: typeof ClienteRutinaRouteImport
+      parentRoute: typeof ClienteRouteRoute
+    }
     '/app/clientes/': {
       id: '/app/clientes/'
       path: '/clientes'
@@ -258,6 +289,13 @@ declare module '@tanstack/react-router' {
       path: '/clientes/$clientId'
       fullPath: '/app/clientes/$clientId'
       preLoaderRoute: typeof AppClientesClientIdRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
+    '/app/rutinas/': {
+      id: '/app/rutinas/'
+      path: '/rutinas'
+      fullPath: '/app/rutinas/'
+      preLoaderRoute: typeof AppRutinasIndexRouteImport
       parentRoute: typeof AppRouteRoute
     }
   }
@@ -281,12 +319,14 @@ interface AppRouteRouteChildren {
   AppIndexRoute: typeof AppIndexRoute
   AppClientesClientIdRoute: typeof AppClientesClientIdRoute
   AppClientesIndexRoute: typeof AppClientesIndexRoute
+  AppRutinasIndexRoute: typeof AppRutinasIndexRoute
 }
 
 const AppRouteRouteChildren: AppRouteRouteChildren = {
   AppIndexRoute: AppIndexRoute,
   AppClientesClientIdRoute: AppClientesClientIdRoute,
   AppClientesIndexRoute: AppClientesIndexRoute,
+  AppRutinasIndexRoute: AppRutinasIndexRoute,
 }
 
 const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(
@@ -294,10 +334,12 @@ const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(
 )
 
 interface ClienteRouteRouteChildren {
+  ClienteRutinaRoute: typeof ClienteRutinaRoute
   ClienteIndexRoute: typeof ClienteIndexRoute
 }
 
 const ClienteRouteRouteChildren: ClienteRouteRouteChildren = {
+  ClienteRutinaRoute: ClienteRutinaRoute,
   ClienteIndexRoute: ClienteIndexRoute,
 }
 
