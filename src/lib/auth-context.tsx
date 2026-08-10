@@ -35,8 +35,20 @@ type AuthState = {
   clientId: string | null;
   units: UnitPrefs;
   subscriptionStatus: string | null;
+  subscription: TrainerSubscription | null;
+  /** El entrenador aún no ha elegido/pagado una membresía. */
+  needsSubscription: boolean;
   refresh: () => Promise<void>;
   signOut: () => Promise<void>;
+};
+
+export type TrainerSubscription = {
+  id: string;
+  plan_id: string | null;
+  status: string;
+  billing_cycle: string;
+  price: number | null;
+  next_billing_at: string | null;
 };
 
 const AuthContext = createContext<AuthState | null>(null);
@@ -48,10 +60,25 @@ export function homeForRole(role: AppRole | null): string {
 }
 
 /** Motivo por el que el acceso está bloqueado, o null si puede entrar. */
+function isExpired(nextBillingAt: string | null | undefined): boolean {
+  if (!nextBillingAt) return false;
+  const today = new Date().toISOString().slice(0, 10);
+  return nextBillingAt < today;
+}
+
+/** true si el entrenador todavía no tiene una membresía elegida. */
+export function trainerNeedsSubscription(
+  role: AppRole | null,
+  subscription: TrainerSubscription | null,
+): boolean {
+  if (role !== "trainer" && role !== "gym_admin") return false;
+  return subscription === null;
+}
+
 export function accessBlockReason(
   role: AppRole | null,
   profile: Profile | null,
-  subscriptionStatus: string | null,
+  subscription: TrainerSubscription | null,
 ): string | null {
   if (!role || role === "super_admin") return null;
   if (profile && profile.access_enabled === false) {
@@ -61,10 +88,13 @@ export function accessBlockReason(
     );
   }
   if (role === "trainer" || role === "gym_admin") {
-    if (subscriptionStatus === "vencido")
-      return "Tu suscripción está vencida. Contacta con el administrador para reactivar tu acceso.";
-    if (subscriptionStatus === "cancelado")
+    if (!subscription) return null; // se resuelve con el alta de membresía, no bloqueando
+    if (subscription.status === "vencido" || isExpired(subscription.next_billing_at))
+      return "Tu suscripción está vencida. Renueva tu membresía para recuperar el acceso. Tus datos y clientes se conservan intactos.";
+    if (subscription.status === "cancelado")
       return "Tu suscripción ha sido cancelada. Contacta con el administrador para reactivar tu acceso.";
+    if (subscription.status === "pendiente")
+      return "Tu pago de membresía está pendiente de confirmación. En cuanto se registre el pago tendrás acceso completo.";
   }
   return null;
 }
@@ -75,7 +105,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [role, setRole] = useState<AppRole | null>(null);
   const [clientId, setClientId] = useState<string | null>(null);
-  const [subscriptionStatus, setSubscriptionStatus] = useState<string | null>(null);
+  const [subscription, setSubscription] = useState<TrainerSubscription | null>(null);
   const [loading, setLoading] = useState(true);
 
   async function loadContext(uid: string | undefined) {
@@ -83,7 +113,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setProfile(null);
       setRole(null);
       setClientId(null);
-      setSubscriptionStatus(null);
+      setSubscription(null);
       return;
     }
     const [{ data: prof }, { data: roles }, { data: client }, { data: sub }] = await Promise.all([
@@ -92,7 +122,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       supabase.from("clients").select("id").eq("user_id", uid).limit(1).maybeSingle(),
       supabase
         .from("trainer_subscriptions")
-        .select("status")
+        .select("id, plan_id, status, billing_cycle, price, next_billing_at")
         .eq("trainer_id", uid)
         .order("created_at", { ascending: false })
         .limit(1)
@@ -103,7 +133,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const priority: AppRole[] = ["super_admin", "gym_admin", "trainer", "client"];
     setRole(priority.find((r) => list.includes(r)) ?? null);
     setClientId((client as { id: string } | null)?.id ?? null);
-    setSubscriptionStatus((sub as { status: string } | null)?.status ?? null);
+    setSubscription((sub as TrainerSubscription | null) ?? null);
   }
 
   useEffect(() => {
@@ -151,7 +181,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     role,
     clientId,
     units,
-    subscriptionStatus,
+    subscriptionStatus: subscription?.status ?? null,
+    subscription,
+    needsSubscription: trainerNeedsSubscription(
+      (["super_admin", "gym_admin", "trainer", "client"] as AppRole[]).find((r) => r === role) ??
+        null,
+      subscription,
+    ),
     refresh: async () => {
       await loadContext(session?.user?.id);
     },
@@ -162,7 +198,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setProfile(null);
       setRole(null);
       setClientId(null);
-      setSubscriptionStatus(null);
+      setSubscription(null);
     },
   };
 

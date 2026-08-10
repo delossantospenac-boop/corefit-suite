@@ -16,6 +16,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ClienteRouteRouteImport } from './routes/cliente/route'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
+import { Route as AdminActividadRouteImport } from './routes/admin/actividad'
 import { Route as AdminClientesRouteImport } from './routes/admin/clientes'
 import { Route as AdminEntrenadoresRouteImport } from './routes/admin/entrenadores'
 import { Route as AdminPlanesRouteImport } from './routes/admin/planes'
@@ -27,6 +28,7 @@ import { Route as ClienteChatRouteImport } from './routes/cliente/chat'
 import { Route as ClienteClasesRouteImport } from './routes/cliente/clases'
 import { Route as ClienteEvaluacionesRouteImport } from './routes/cliente/evaluaciones'
 import { Route as ClienteFotosRouteImport } from './routes/cliente/fotos'
+import { Route as ClienteFuerzaRouteImport } from './routes/cliente/fuerza'
 import { Route as ClienteHabitosRouteImport } from './routes/cliente/habitos'
 import { Route as ClienteLogrosRouteImport } from './routes/cliente/logros'
 import { Route as ClienteNutricionRouteImport } from './routes/cliente/nutricion'
@@ -72,6 +74,11 @@ const ResetPasswordRoute = ResetPasswordRouteImport.update({
 const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminActividadRoute = AdminActividadRouteImport.update({
+  id: '/actividad',
+  path: '/actividad',
   getParentRoute: () => AdminRouteRoute,
 } as any)
 const AdminClientesRoute = AdminClientesRouteImport.update({
@@ -127,6 +134,11 @@ const ClienteEvaluacionesRoute = ClienteEvaluacionesRouteImport.update({
 const ClienteFotosRoute = ClienteFotosRouteImport.update({
   id: '/fotos',
   path: '/fotos',
+  getParentRoute: () => ClienteRouteRoute,
+} as any)
+const ClienteFuerzaRoute = ClienteFuerzaRouteImport.update({
+  id: '/fuerza',
+  path: '/fuerza',
   getParentRoute: () => ClienteRouteRoute,
 } as any)
 const ClienteHabitosRoute = ClienteHabitosRouteImport.update({
@@ -192,6 +204,7 @@ export interface FileRoutesByFullPath {
   '/cliente': typeof ClienteRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/admin/actividad': typeof AdminActividadRoute
   '/admin/clientes': typeof AdminClientesRoute
   '/admin/entrenadores': typeof AdminEntrenadoresRoute
   '/admin/planes': typeof AdminPlanesRoute
@@ -201,6 +214,7 @@ export interface FileRoutesByFullPath {
   '/cliente/clases': typeof ClienteClasesRoute
   '/cliente/evaluaciones': typeof ClienteEvaluacionesRoute
   '/cliente/fotos': typeof ClienteFotosRoute
+  '/cliente/fuerza': typeof ClienteFuerzaRoute
   '/cliente/habitos': typeof ClienteHabitosRoute
   '/cliente/logros': typeof ClienteLogrosRoute
   '/cliente/nutricion': typeof ClienteNutricionRoute
@@ -220,6 +234,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/admin/actividad': typeof AdminActividadRoute
   '/admin/clientes': typeof AdminClientesRoute
   '/admin/entrenadores': typeof AdminEntrenadoresRoute
   '/admin/planes': typeof AdminPlanesRoute
@@ -229,6 +244,7 @@ export interface FileRoutesByTo {
   '/cliente/clases': typeof ClienteClasesRoute
   '/cliente/evaluaciones': typeof ClienteEvaluacionesRoute
   '/cliente/fotos': typeof ClienteFotosRoute
+  '/cliente/fuerza': typeof ClienteFuerzaRoute
   '/cliente/habitos': typeof ClienteHabitosRoute
   '/cliente/logros': typeof ClienteLogrosRoute
   '/cliente/nutricion': typeof ClienteNutricionRoute
@@ -252,6 +268,7 @@ export interface FileRoutesById {
   '/cliente': typeof ClienteRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/admin/actividad': typeof AdminActividadRoute
   '/admin/clientes': typeof AdminClientesRoute
   '/admin/entrenadores': typeof AdminEntrenadoresRoute
   '/admin/planes': typeof AdminPlanesRoute
@@ -261,6 +278,7 @@ export interface FileRoutesById {
   '/cliente/clases': typeof ClienteClasesRoute
   '/cliente/evaluaciones': typeof ClienteEvaluacionesRoute
   '/cliente/fotos': typeof ClienteFotosRoute
+  '/cliente/fuerza': typeof ClienteFuerzaRoute
   '/cliente/habitos': typeof ClienteHabitosRoute
   '/cliente/logros': typeof ClienteLogrosRoute
   '/cliente/nutricion': typeof ClienteNutricionRoute
@@ -285,6 +303,7 @@ export interface FileRouteTypes {
     | '/cliente'
     | '/auth'
     | '/reset-password'
+    | '/admin/actividad'
     | '/admin/clientes'
     | '/admin/entrenadores'
     | '/admin/planes'
@@ -294,6 +313,7 @@ export interface FileRouteTypes {
     | '/cliente/clases'
     | '/cliente/evaluaciones'
     | '/cliente/fotos'
+    | '/cliente/fuerza'
     | '/cliente/habitos'
     | '/cliente/logros'
     | '/cliente/nutricion'
@@ -313,6 +333,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/reset-password'
+    | '/admin/actividad'
     | '/admin/clientes'
     | '/admin/entrenadores'
     | '/admin/planes'
@@ -322,6 +343,7 @@ export interface FileRouteTypes {
     | '/cliente/clases'
     | '/cliente/evaluaciones'
     | '/cliente/fotos'
+    | '/cliente/fuerza'
     | '/cliente/habitos'
     | '/cliente/logros'
     | '/cliente/nutricion'
@@ -344,6 +366,7 @@ export interface FileRouteTypes {
     | '/cliente'
     | '/auth'
     | '/reset-password'
+    | '/admin/actividad'
     | '/admin/clientes'
     | '/admin/entrenadores'
     | '/admin/planes'
@@ -353,6 +376,7 @@ export interface FileRouteTypes {
     | '/cliente/clases'
     | '/cliente/evaluaciones'
     | '/cliente/fotos'
+    | '/cliente/fuerza'
     | '/cliente/habitos'
     | '/cliente/logros'
     | '/cliente/nutricion'
@@ -427,6 +451,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/admin/'
       preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/actividad': {
+      id: '/admin/actividad'
+      path: '/actividad'
+      fullPath: '/admin/actividad'
+      preLoaderRoute: typeof AdminActividadRouteImport
       parentRoute: typeof AdminRouteRoute
     }
     '/admin/clientes': {
@@ -504,6 +535,13 @@ declare module '@tanstack/react-router' {
       path: '/fotos'
       fullPath: '/cliente/fotos'
       preLoaderRoute: typeof ClienteFotosRouteImport
+      parentRoute: typeof ClienteRouteRoute
+    }
+    '/cliente/fuerza': {
+      id: '/cliente/fuerza'
+      path: '/fuerza'
+      fullPath: '/cliente/fuerza'
+      preLoaderRoute: typeof ClienteFuerzaRouteImport
       parentRoute: typeof ClienteRouteRoute
     }
     '/cliente/habitos': {
@@ -587,6 +625,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface AdminRouteRouteChildren {
+  AdminActividadRoute: typeof AdminActividadRoute
   AdminClientesRoute: typeof AdminClientesRoute
   AdminEntrenadoresRoute: typeof AdminEntrenadoresRoute
   AdminPlanesRoute: typeof AdminPlanesRoute
@@ -595,6 +634,7 @@ interface AdminRouteRouteChildren {
 }
 
 const AdminRouteRouteChildren: AdminRouteRouteChildren = {
+  AdminActividadRoute: AdminActividadRoute,
   AdminClientesRoute: AdminClientesRoute,
   AdminEntrenadoresRoute: AdminEntrenadoresRoute,
   AdminPlanesRoute: AdminPlanesRoute,
@@ -633,6 +673,7 @@ interface ClienteRouteRouteChildren {
   ClienteClasesRoute: typeof ClienteClasesRoute
   ClienteEvaluacionesRoute: typeof ClienteEvaluacionesRoute
   ClienteFotosRoute: typeof ClienteFotosRoute
+  ClienteFuerzaRoute: typeof ClienteFuerzaRoute
   ClienteHabitosRoute: typeof ClienteHabitosRoute
   ClienteLogrosRoute: typeof ClienteLogrosRoute
   ClienteNutricionRoute: typeof ClienteNutricionRoute
@@ -648,6 +689,7 @@ const ClienteRouteRouteChildren: ClienteRouteRouteChildren = {
   ClienteClasesRoute: ClienteClasesRoute,
   ClienteEvaluacionesRoute: ClienteEvaluacionesRoute,
   ClienteFotosRoute: ClienteFotosRoute,
+  ClienteFuerzaRoute: ClienteFuerzaRoute,
   ClienteHabitosRoute: ClienteHabitosRoute,
   ClienteLogrosRoute: ClienteLogrosRoute,
   ClienteNutricionRoute: ClienteNutricionRoute,

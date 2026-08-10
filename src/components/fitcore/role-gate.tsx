@@ -35,11 +35,11 @@ function AccessBlocked({ reason }: { reason: string }) {
 }
 
 export function RoleGate({ allow, children }: { allow: AppRole[]; children: ReactNode }) {
-  const { loading, session, role, profile, subscriptionStatus } = useAuth();
+  const { loading, session, role, profile, subscription, needsSubscription } = useAuth();
   const router = useRouter();
 
   const allowed = role !== null && allow.includes(role);
-  const blockReason = accessBlockReason(role, profile, subscriptionStatus);
+  const blockReason = accessBlockReason(role, profile, subscription);
 
   useEffect(() => {
     if (loading) return;
@@ -47,10 +47,14 @@ export function RoleGate({ allow, children }: { allow: AppRole[]; children: Reac
       void router.navigate({ to: "/auth", replace: true });
       return;
     }
+    if (needsSubscription && !blockReason) {
+      void router.navigate({ to: "/suscripcion", replace: true });
+      return;
+    }
     if (role && !allowed && !blockReason) {
       void router.navigate({ to: homeForRole(role), replace: true });
     }
-  }, [loading, session, role, allowed, blockReason, router]);
+  }, [loading, session, role, allowed, blockReason, needsSubscription, router]);
 
   if (!loading && session && role && blockReason) {
     return <AccessBlocked reason={blockReason} />;
