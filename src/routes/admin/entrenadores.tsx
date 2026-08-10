@@ -166,6 +166,7 @@ function TrainersPage() {
   const [createOpen, setCreateOpen] = useState(false);
   const [editTarget, setEditTarget] = useState<TrainerProfile | null>(null);
   const [denyTarget, setDenyTarget] = useState<TrainerProfile | null>(null);
+  const [historyTarget, setHistoryTarget] = useState<TrainerProfile | null>(null);
   const [createdCreds, setCreatedCreds] = useState<{ email: string; password: string } | null>(null);
 
   const createTrainerFn = useServerFn(createTrainerAccount);
@@ -249,7 +250,8 @@ function TrainersPage() {
           return acc;
         }, null);
         const estado = computeEstado(p, sub);
-        return { profile: p, sub, plan, clientsUsed: myClients.length, lastActivity, estado };
+        const effectiveAccess = computeEffectiveAccess(p, sub);
+        return { profile: p, sub, plan, clientsUsed: myClients.length, lastActivity, estado, effectiveAccess };
       })
       .filter((r) => {
         const matchTerm =
@@ -323,9 +325,22 @@ function TrainersPage() {
                     <p className="mt-1 text-xs text-destructive">Motivo: {r.profile.access_note}</p>
                   )}
                 </div>
-                <Badge variant="outline" className={cn("shrink-0 text-[10px] uppercase", estadoTone[r.estado])}>
-                  {estadoLabel[r.estado]}
-                </Badge>
+                <div className="flex shrink-0 flex-col items-end gap-1">
+                  <Badge variant="outline" className={cn("text-[10px] uppercase", estadoTone[r.estado])}>
+                    {estadoLabel[r.estado]}
+                  </Badge>
+                  <Badge
+                    variant="outline"
+                    className={cn(
+                      "text-[10px] uppercase",
+                      r.effectiveAccess
+                        ? "border-success/40 bg-success/10 text-success"
+                        : "border-destructive/40 bg-destructive/10 text-destructive",
+                    )}
+                  >
+                    Acceso efectivo: {r.effectiveAccess ? "Sí" : "No"}
+                  </Badge>
+                </div>
               </div>
 
               <dl className="mt-4 grid grid-cols-2 gap-3 text-center sm:grid-cols-5">
@@ -339,7 +354,16 @@ function TrainersPage() {
                 </div>
                 <div className="rounded-lg bg-background/50 py-2">
                   <dt className="text-[10px] uppercase tracking-widest text-muted-foreground">Vencimiento</dt>
-                  <dd className="text-sm font-medium">{r.sub ? formatDate(r.sub.next_billing_at) : "—"}</dd>
+                  <dd
+                    className={cn(
+                      "text-sm font-medium",
+                      r.sub?.next_billing_at &&
+                        r.sub.next_billing_at < new Date().toISOString().slice(0, 10) &&
+                        "text-destructive",
+                    )}
+                  >
+                    {r.sub ? formatDate(r.sub.next_billing_at) : "—"}
+                  </dd>
                 </div>
                 <div className="rounded-lg bg-background/50 py-2">
                   <dt className="text-[10px] uppercase tracking-widest text-muted-foreground">Clientes</dt>
@@ -365,7 +389,7 @@ function TrainersPage() {
                 </Button>
                 {r.profile.access_enabled ? (
                   <Button size="sm" variant="secondary" onClick={() => setDenyTarget(r.profile)}>
-                    <ShieldOff className="mr-1.5 h-3.5 w-3.5" /> Denegar acceso
+                    <ShieldOff className="mr-1.5 h-3.5 w-3.5" /> Denegar / Suspender acceso
                   </Button>
                 ) : (
                   <Button
@@ -374,9 +398,12 @@ function TrainersPage() {
                     onClick={() => access.mutate({ userId: r.profile.id, enabled: true })}
                     disabled={access.isPending}
                   >
-                    <ShieldCheck className="mr-1.5 h-3.5 w-3.5" /> Activar acceso
+                    <ShieldCheck className="mr-1.5 h-3.5 w-3.5" /> {r.profile.access_note ? "Reactivar acceso" : "Activar acceso"}
                   </Button>
                 )}
+                <Button size="sm" variant="ghost" onClick={() => setHistoryTarget(r.profile)}>
+                  <History className="mr-1.5 h-3.5 w-3.5" /> Historial de pagos
+                </Button>
                 <Button
                   size="sm"
                   variant="ghost"
@@ -418,6 +445,13 @@ function TrainersPage() {
       />
 
       <CredentialsDialog creds={createdCreds} onOpenChange={(v) => !v && setCreatedCreds(null)} />
+
+      <PaymentHistoryDialog
+        target={historyTarget}
+        payments={data?.payments ?? []}
+        plans={data?.plans ?? []}
+        onOpenChange={(v) => !v && setHistoryTarget(null)}
+      />
     </div>
   );
 }
