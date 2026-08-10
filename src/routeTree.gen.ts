@@ -15,21 +15,27 @@ import { Route as AppRouteRouteImport } from './routes/app/route'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ClienteRouteRouteImport } from './routes/cliente/route'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as SuscripcionRouteImport } from './routes/suscripcion'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
+import { Route as AdminActividadRouteImport } from './routes/admin/actividad'
 import { Route as AdminClientesRouteImport } from './routes/admin/clientes'
 import { Route as AdminEntrenadoresRouteImport } from './routes/admin/entrenadores'
 import { Route as AdminPlanesRouteImport } from './routes/admin/planes'
 import { Route as AdminSuscripcionesRouteImport } from './routes/admin/suscripciones'
 import { Route as AppIndexRouteImport } from './routes/app/index'
+import { Route as AppAjustesRouteImport } from './routes/app/ajustes'
+import { Route as AppClasesRouteImport } from './routes/app/clases'
 import { Route as AppEjerciciosRouteImport } from './routes/app/ejercicios'
 import { Route as ClienteIndexRouteImport } from './routes/cliente/index'
 import { Route as ClienteChatRouteImport } from './routes/cliente/chat'
 import { Route as ClienteClasesRouteImport } from './routes/cliente/clases'
 import { Route as ClienteEvaluacionesRouteImport } from './routes/cliente/evaluaciones'
 import { Route as ClienteFotosRouteImport } from './routes/cliente/fotos'
+import { Route as ClienteFuerzaRouteImport } from './routes/cliente/fuerza'
 import { Route as ClienteHabitosRouteImport } from './routes/cliente/habitos'
 import { Route as ClienteLogrosRouteImport } from './routes/cliente/logros'
 import { Route as ClienteNutricionRouteImport } from './routes/cliente/nutricion'
+import { Route as ClientePerfilRouteImport } from './routes/cliente/perfil'
 import { Route as ClienteProgresoRouteImport } from './routes/cliente/progreso'
 import { Route as ClienteRutinaRouteImport } from './routes/cliente/rutina'
 import { Route as AppClientesIndexRouteImport } from './routes/app/clientes.index'
@@ -68,9 +74,19 @@ const ResetPasswordRoute = ResetPasswordRouteImport.update({
   path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SuscripcionRoute = SuscripcionRouteImport.update({
+  id: '/suscripcion',
+  path: '/suscripcion',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminActividadRoute = AdminActividadRouteImport.update({
+  id: '/actividad',
+  path: '/actividad',
   getParentRoute: () => AdminRouteRoute,
 } as any)
 const AdminClientesRoute = AdminClientesRouteImport.update({
@@ -96,6 +112,16 @@ const AdminSuscripcionesRoute = AdminSuscripcionesRouteImport.update({
 const AppIndexRoute = AppIndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => AppRouteRoute,
+} as any)
+const AppAjustesRoute = AppAjustesRouteImport.update({
+  id: '/ajustes',
+  path: '/ajustes',
+  getParentRoute: () => AppRouteRoute,
+} as any)
+const AppClasesRoute = AppClasesRouteImport.update({
+  id: '/clases',
+  path: '/clases',
   getParentRoute: () => AppRouteRoute,
 } as any)
 const AppEjerciciosRoute = AppEjerciciosRouteImport.update({
@@ -128,6 +154,11 @@ const ClienteFotosRoute = ClienteFotosRouteImport.update({
   path: '/fotos',
   getParentRoute: () => ClienteRouteRoute,
 } as any)
+const ClienteFuerzaRoute = ClienteFuerzaRouteImport.update({
+  id: '/fuerza',
+  path: '/fuerza',
+  getParentRoute: () => ClienteRouteRoute,
+} as any)
 const ClienteHabitosRoute = ClienteHabitosRouteImport.update({
   id: '/habitos',
   path: '/habitos',
@@ -141,6 +172,11 @@ const ClienteLogrosRoute = ClienteLogrosRouteImport.update({
 const ClienteNutricionRoute = ClienteNutricionRouteImport.update({
   id: '/nutricion',
   path: '/nutricion',
+  getParentRoute: () => ClienteRouteRoute,
+} as any)
+const ClientePerfilRoute = ClientePerfilRouteImport.update({
+  id: '/perfil',
+  path: '/perfil',
   getParentRoute: () => ClienteRouteRoute,
 } as any)
 const ClienteProgresoRoute = ClienteProgresoRouteImport.update({
@@ -186,18 +222,24 @@ export interface FileRoutesByFullPath {
   '/cliente': typeof ClienteRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/suscripcion': typeof SuscripcionRoute
+  '/admin/actividad': typeof AdminActividadRoute
   '/admin/clientes': typeof AdminClientesRoute
   '/admin/entrenadores': typeof AdminEntrenadoresRoute
   '/admin/planes': typeof AdminPlanesRoute
   '/admin/suscripciones': typeof AdminSuscripcionesRoute
+  '/app/ajustes': typeof AppAjustesRoute
+  '/app/clases': typeof AppClasesRoute
   '/app/ejercicios': typeof AppEjerciciosRoute
   '/cliente/chat': typeof ClienteChatRoute
   '/cliente/clases': typeof ClienteClasesRoute
   '/cliente/evaluaciones': typeof ClienteEvaluacionesRoute
   '/cliente/fotos': typeof ClienteFotosRoute
+  '/cliente/fuerza': typeof ClienteFuerzaRoute
   '/cliente/habitos': typeof ClienteHabitosRoute
   '/cliente/logros': typeof ClienteLogrosRoute
   '/cliente/nutricion': typeof ClienteNutricionRoute
+  '/cliente/perfil': typeof ClientePerfilRoute
   '/cliente/progreso': typeof ClienteProgresoRoute
   '/cliente/rutina': typeof ClienteRutinaRoute
   '/admin/': typeof AdminIndexRoute
@@ -213,18 +255,24 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/suscripcion': typeof SuscripcionRoute
+  '/admin/actividad': typeof AdminActividadRoute
   '/admin/clientes': typeof AdminClientesRoute
   '/admin/entrenadores': typeof AdminEntrenadoresRoute
   '/admin/planes': typeof AdminPlanesRoute
   '/admin/suscripciones': typeof AdminSuscripcionesRoute
+  '/app/ajustes': typeof AppAjustesRoute
+  '/app/clases': typeof AppClasesRoute
   '/app/ejercicios': typeof AppEjerciciosRoute
   '/cliente/chat': typeof ClienteChatRoute
   '/cliente/clases': typeof ClienteClasesRoute
   '/cliente/evaluaciones': typeof ClienteEvaluacionesRoute
   '/cliente/fotos': typeof ClienteFotosRoute
+  '/cliente/fuerza': typeof ClienteFuerzaRoute
   '/cliente/habitos': typeof ClienteHabitosRoute
   '/cliente/logros': typeof ClienteLogrosRoute
   '/cliente/nutricion': typeof ClienteNutricionRoute
+  '/cliente/perfil': typeof ClientePerfilRoute
   '/cliente/progreso': typeof ClienteProgresoRoute
   '/cliente/rutina': typeof ClienteRutinaRoute
   '/admin': typeof AdminIndexRoute
@@ -244,18 +292,24 @@ export interface FileRoutesById {
   '/cliente': typeof ClienteRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/suscripcion': typeof SuscripcionRoute
+  '/admin/actividad': typeof AdminActividadRoute
   '/admin/clientes': typeof AdminClientesRoute
   '/admin/entrenadores': typeof AdminEntrenadoresRoute
   '/admin/planes': typeof AdminPlanesRoute
   '/admin/suscripciones': typeof AdminSuscripcionesRoute
+  '/app/ajustes': typeof AppAjustesRoute
+  '/app/clases': typeof AppClasesRoute
   '/app/ejercicios': typeof AppEjerciciosRoute
   '/cliente/chat': typeof ClienteChatRoute
   '/cliente/clases': typeof ClienteClasesRoute
   '/cliente/evaluaciones': typeof ClienteEvaluacionesRoute
   '/cliente/fotos': typeof ClienteFotosRoute
+  '/cliente/fuerza': typeof ClienteFuerzaRoute
   '/cliente/habitos': typeof ClienteHabitosRoute
   '/cliente/logros': typeof ClienteLogrosRoute
   '/cliente/nutricion': typeof ClienteNutricionRoute
+  '/cliente/perfil': typeof ClientePerfilRoute
   '/cliente/progreso': typeof ClienteProgresoRoute
   '/cliente/rutina': typeof ClienteRutinaRoute
   '/admin/': typeof AdminIndexRoute
@@ -276,18 +330,24 @@ export interface FileRouteTypes {
     | '/cliente'
     | '/auth'
     | '/reset-password'
+    | '/suscripcion'
+    | '/admin/actividad'
     | '/admin/clientes'
     | '/admin/entrenadores'
     | '/admin/planes'
     | '/admin/suscripciones'
+    | '/app/ajustes'
+    | '/app/clases'
     | '/app/ejercicios'
     | '/cliente/chat'
     | '/cliente/clases'
     | '/cliente/evaluaciones'
     | '/cliente/fotos'
+    | '/cliente/fuerza'
     | '/cliente/habitos'
     | '/cliente/logros'
     | '/cliente/nutricion'
+    | '/cliente/perfil'
     | '/cliente/progreso'
     | '/cliente/rutina'
     | '/admin/'
@@ -303,18 +363,24 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/reset-password'
+    | '/suscripcion'
+    | '/admin/actividad'
     | '/admin/clientes'
     | '/admin/entrenadores'
     | '/admin/planes'
     | '/admin/suscripciones'
+    | '/app/ajustes'
+    | '/app/clases'
     | '/app/ejercicios'
     | '/cliente/chat'
     | '/cliente/clases'
     | '/cliente/evaluaciones'
     | '/cliente/fotos'
+    | '/cliente/fuerza'
     | '/cliente/habitos'
     | '/cliente/logros'
     | '/cliente/nutricion'
+    | '/cliente/perfil'
     | '/cliente/progreso'
     | '/cliente/rutina'
     | '/admin'
@@ -333,18 +399,24 @@ export interface FileRouteTypes {
     | '/cliente'
     | '/auth'
     | '/reset-password'
+    | '/suscripcion'
+    | '/admin/actividad'
     | '/admin/clientes'
     | '/admin/entrenadores'
     | '/admin/planes'
     | '/admin/suscripciones'
+    | '/app/ajustes'
+    | '/app/clases'
     | '/app/ejercicios'
     | '/cliente/chat'
     | '/cliente/clases'
     | '/cliente/evaluaciones'
     | '/cliente/fotos'
+    | '/cliente/fuerza'
     | '/cliente/habitos'
     | '/cliente/logros'
     | '/cliente/nutricion'
+    | '/cliente/perfil'
     | '/cliente/progreso'
     | '/cliente/rutina'
     | '/admin/'
@@ -364,6 +436,7 @@ export interface RootRouteChildren {
   ClienteRouteRoute: typeof ClienteRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  SuscripcionRoute: typeof SuscripcionRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -410,11 +483,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/suscripcion': {
+      id: '/suscripcion'
+      path: '/suscripcion'
+      fullPath: '/suscripcion'
+      preLoaderRoute: typeof SuscripcionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/': {
       id: '/admin/'
       path: '/'
       fullPath: '/admin/'
       preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/actividad': {
+      id: '/admin/actividad'
+      path: '/actividad'
+      fullPath: '/admin/actividad'
+      preLoaderRoute: typeof AdminActividadRouteImport
       parentRoute: typeof AdminRouteRoute
     }
     '/admin/clientes': {
@@ -450,6 +537,20 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/app/'
       preLoaderRoute: typeof AppIndexRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
+    '/app/ajustes': {
+      id: '/app/ajustes'
+      path: '/ajustes'
+      fullPath: '/app/ajustes'
+      preLoaderRoute: typeof AppAjustesRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
+    '/app/clases': {
+      id: '/app/clases'
+      path: '/clases'
+      fullPath: '/app/clases'
+      preLoaderRoute: typeof AppClasesRouteImport
       parentRoute: typeof AppRouteRoute
     }
     '/app/ejercicios': {
@@ -494,6 +595,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ClienteFotosRouteImport
       parentRoute: typeof ClienteRouteRoute
     }
+    '/cliente/fuerza': {
+      id: '/cliente/fuerza'
+      path: '/fuerza'
+      fullPath: '/cliente/fuerza'
+      preLoaderRoute: typeof ClienteFuerzaRouteImport
+      parentRoute: typeof ClienteRouteRoute
+    }
     '/cliente/habitos': {
       id: '/cliente/habitos'
       path: '/habitos'
@@ -513,6 +621,13 @@ declare module '@tanstack/react-router' {
       path: '/nutricion'
       fullPath: '/cliente/nutricion'
       preLoaderRoute: typeof ClienteNutricionRouteImport
+      parentRoute: typeof ClienteRouteRoute
+    }
+    '/cliente/perfil': {
+      id: '/cliente/perfil'
+      path: '/perfil'
+      fullPath: '/cliente/perfil'
+      preLoaderRoute: typeof ClientePerfilRouteImport
       parentRoute: typeof ClienteRouteRoute
     }
     '/cliente/progreso': {
@@ -568,6 +683,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface AdminRouteRouteChildren {
+  AdminActividadRoute: typeof AdminActividadRoute
   AdminClientesRoute: typeof AdminClientesRoute
   AdminEntrenadoresRoute: typeof AdminEntrenadoresRoute
   AdminPlanesRoute: typeof AdminPlanesRoute
@@ -576,6 +692,7 @@ interface AdminRouteRouteChildren {
 }
 
 const AdminRouteRouteChildren: AdminRouteRouteChildren = {
+  AdminActividadRoute: AdminActividadRoute,
   AdminClientesRoute: AdminClientesRoute,
   AdminEntrenadoresRoute: AdminEntrenadoresRoute,
   AdminPlanesRoute: AdminPlanesRoute,
@@ -588,6 +705,8 @@ const AdminRouteRouteWithChildren = AdminRouteRoute._addFileChildren(
 )
 
 interface AppRouteRouteChildren {
+  AppAjustesRoute: typeof AppAjustesRoute
+  AppClasesRoute: typeof AppClasesRoute
   AppEjerciciosRoute: typeof AppEjerciciosRoute
   AppIndexRoute: typeof AppIndexRoute
   AppClientesClientIdRoute: typeof AppClientesClientIdRoute
@@ -597,6 +716,8 @@ interface AppRouteRouteChildren {
 }
 
 const AppRouteRouteChildren: AppRouteRouteChildren = {
+  AppAjustesRoute: AppAjustesRoute,
+  AppClasesRoute: AppClasesRoute,
   AppEjerciciosRoute: AppEjerciciosRoute,
   AppIndexRoute: AppIndexRoute,
   AppClientesClientIdRoute: AppClientesClientIdRoute,
@@ -614,9 +735,11 @@ interface ClienteRouteRouteChildren {
   ClienteClasesRoute: typeof ClienteClasesRoute
   ClienteEvaluacionesRoute: typeof ClienteEvaluacionesRoute
   ClienteFotosRoute: typeof ClienteFotosRoute
+  ClienteFuerzaRoute: typeof ClienteFuerzaRoute
   ClienteHabitosRoute: typeof ClienteHabitosRoute
   ClienteLogrosRoute: typeof ClienteLogrosRoute
   ClienteNutricionRoute: typeof ClienteNutricionRoute
+  ClientePerfilRoute: typeof ClientePerfilRoute
   ClienteProgresoRoute: typeof ClienteProgresoRoute
   ClienteRutinaRoute: typeof ClienteRutinaRoute
   ClienteIndexRoute: typeof ClienteIndexRoute
@@ -628,9 +751,11 @@ const ClienteRouteRouteChildren: ClienteRouteRouteChildren = {
   ClienteClasesRoute: ClienteClasesRoute,
   ClienteEvaluacionesRoute: ClienteEvaluacionesRoute,
   ClienteFotosRoute: ClienteFotosRoute,
+  ClienteFuerzaRoute: ClienteFuerzaRoute,
   ClienteHabitosRoute: ClienteHabitosRoute,
   ClienteLogrosRoute: ClienteLogrosRoute,
   ClienteNutricionRoute: ClienteNutricionRoute,
+  ClientePerfilRoute: ClientePerfilRoute,
   ClienteProgresoRoute: ClienteProgresoRoute,
   ClienteRutinaRoute: ClienteRutinaRoute,
   ClienteIndexRoute: ClienteIndexRoute,
@@ -648,6 +773,7 @@ const rootRouteChildren: RootRouteChildren = {
   ClienteRouteRoute: ClienteRouteRouteWithChildren,
   AuthRoute: AuthRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  SuscripcionRoute: SuscripcionRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useMemo, useState } from "react";
-import { Copy, Pencil, Plus, Search, ShieldOff, ShieldCheck, Trash2, UserCog } from "lucide-react";
+import { Copy, History, Pencil, Plus, Search, ShieldOff, ShieldCheck, Trash2, UserCog } from "lucide-react";
 import { toast } from "sonner";
 import { z } from "zod";
 
@@ -76,6 +76,19 @@ type Plan = { id: string; name: string; max_clients: number | null };
 
 type ClientRow = { trainer_id: string; last_activity_at: string | null; created_at: string };
 
+type Payment = {
+  id: string;
+  trainer_id: string;
+  plan_id: string | null;
+  amount: number;
+  billing_cycle: string;
+  period_start: string;
+  period_end: string | null;
+  method: string | null;
+  status: "activo" | "pendiente" | "vencido" | "cancelado";
+  paid_at: string | null;
+};
+
 type EstadoKey = "activo" | "suspendido" | "pendiente" | "inactivo";
 
 const estadoTone: Record<EstadoKey, string> = {
@@ -100,11 +113,17 @@ function computeEstado(profile: TrainerProfile, sub: Subscription | undefined): 
   return "activo";
 }
 
+function computeEffectiveAccess(profile: TrainerProfile, sub: Subscription | undefined): boolean {
+  if (!profile.access_enabled) return false;
+  if (!sub) return true;
+  return sub.status === "activo" || sub.status === "pendiente";
+}
+
 function useTrainers() {
   return useQuery({
     queryKey: ["admin-trainers"],
     queryFn: async () => {
-      const [rolesRes, profilesRes, subsRes, plansRes, clientsRes] = await Promise.all([
+      const [rolesRes, profilesRes, subsRes, plansRes, clientsRes, paymentsRes] = await Promise.all([
         supabase.from("user_roles").select("user_id, role").in("role", ["trainer", "gym_admin"]),
         supabase
           .from("profiles")
@@ -114,6 +133,10 @@ function useTrainers() {
           .select("trainer_id, status, price, billing_cycle, started_at, next_billing_at, plan_id"),
         supabase.from("subscription_plans").select("id, name, max_clients"),
         supabase.from("clients").select("trainer_id, last_activity_at, created_at"),
+        supabase
+          .from("membership_payments")
+          .select("id, trainer_id, plan_id, amount, billing_cycle, period_start, period_end, method, status, paid_at")
+          .order("created_at", { ascending: false }),
       ]);
       const trainerIds = new Set((rolesRes.data ?? []).map((r) => r.user_id));
       const profiles = ((profilesRes.data ?? []) as TrainerProfile[]).filter((p) => trainerIds.has(p.id));
@@ -122,6 +145,7 @@ function useTrainers() {
         subs: (subsRes.data ?? []) as Subscription[],
         plans: (plansRes.data ?? []) as Plan[],
         clients: (clientsRes.data ?? []) as ClientRow[],
+        payments: (paymentsRes.data ?? []) as Payment[],
       };
     },
   });
@@ -142,6 +166,7 @@ function TrainersPage() {
   const [createOpen, setCreateOpen] = useState(false);
   const [editTarget, setEditTarget] = useState<TrainerProfile | null>(null);
   const [denyTarget, setDenyTarget] = useState<TrainerProfile | null>(null);
+  const [historyTarget, setHistoryTarget] = useState<TrainerProfile | null>(null);
   const [createdCreds, setCreatedCreds] = useState<{ email: string; password: string } | null>(null);
 
   const createTrainerFn = useServerFn(createTrainerAccount);
@@ -225,7 +250,8 @@ function TrainersPage() {
           return acc;
         }, null);
         const estado = computeEstado(p, sub);
-        return { profile: p, sub, plan, clientsUsed: myClients.length, lastActivity, estado };
+        const effectiveAccess = computeEffectiveAccess(p, sub);
+        return { profile: p, sub, plan, clientsUsed: myClients.length, lastActivity, estado, effectiveAccess };
       })
       .filter((r) => {
         const matchTerm =
@@ -299,9 +325,22 @@ function TrainersPage() {
                     <p className="mt-1 text-xs text-destructive">Motivo: {r.profile.access_note}</p>
                   )}
                 </div>
-                <Badge variant="outline" className={cn("shrink-0 text-[10px] uppercase", estadoTone[r.estado])}>
-                  {estadoLabel[r.estado]}
-                </Badge>
+                <div className="flex shrink-0 flex-col items-end gap-1">
+                  <Badge variant="outline" className={cn("text-[10px] uppercase", estadoTone[r.estado])}>
+                    {estadoLabel[r.estado]}
+                  </Badge>
+                  <Badge
+                    variant="outline"
+                    className={cn(
+                      "text-[10px] uppercase",
+                      r.effectiveAccess
+                        ? "border-success/40 bg-success/10 text-success"
+                        : "border-destructive/40 bg-destructive/10 text-destructive",
+                    )}
+                  >
+                    Acceso efectivo: {r.effectiveAccess ? "Sí" : "No"}
+                  </Badge>
+                </div>
               </div>
 
               <dl className="mt-4 grid grid-cols-2 gap-3 text-center sm:grid-cols-5">
@@ -315,7 +354,16 @@ function TrainersPage() {
                 </div>
                 <div className="rounded-lg bg-background/50 py-2">
                   <dt className="text-[10px] uppercase tracking-widest text-muted-foreground">Vencimiento</dt>
-                  <dd className="text-sm font-medium">{r.sub ? formatDate(r.sub.next_billing_at) : "—"}</dd>
+                  <dd
+                    className={cn(
+                      "text-sm font-medium",
+                      r.sub?.next_billing_at &&
+                        r.sub.next_billing_at < new Date().toISOString().slice(0, 10) &&
+                        "text-destructive",
+                    )}
+                  >
+                    {r.sub ? formatDate(r.sub.next_billing_at) : "—"}
+                  </dd>
                 </div>
                 <div className="rounded-lg bg-background/50 py-2">
                   <dt className="text-[10px] uppercase tracking-widest text-muted-foreground">Clientes</dt>
@@ -341,7 +389,7 @@ function TrainersPage() {
                 </Button>
                 {r.profile.access_enabled ? (
                   <Button size="sm" variant="secondary" onClick={() => setDenyTarget(r.profile)}>
-                    <ShieldOff className="mr-1.5 h-3.5 w-3.5" /> Denegar acceso
+                    <ShieldOff className="mr-1.5 h-3.5 w-3.5" /> Denegar / Suspender acceso
                   </Button>
                 ) : (
                   <Button
@@ -350,9 +398,12 @@ function TrainersPage() {
                     onClick={() => access.mutate({ userId: r.profile.id, enabled: true })}
                     disabled={access.isPending}
                   >
-                    <ShieldCheck className="mr-1.5 h-3.5 w-3.5" /> Activar acceso
+                    <ShieldCheck className="mr-1.5 h-3.5 w-3.5" /> {r.profile.access_note ? "Reactivar acceso" : "Activar acceso"}
                   </Button>
                 )}
+                <Button size="sm" variant="ghost" onClick={() => setHistoryTarget(r.profile)}>
+                  <History className="mr-1.5 h-3.5 w-3.5" /> Historial de pagos
+                </Button>
                 <Button
                   size="sm"
                   variant="ghost"
@@ -394,6 +445,13 @@ function TrainersPage() {
       />
 
       <CredentialsDialog creds={createdCreds} onOpenChange={(v) => !v && setCreatedCreds(null)} />
+
+      <PaymentHistoryDialog
+        target={historyTarget}
+        payments={data?.payments ?? []}
+        plans={data?.plans ?? []}
+        onOpenChange={(v) => !v && setHistoryTarget(null)}
+      />
     </div>
   );
 }

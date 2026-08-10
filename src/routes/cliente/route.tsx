@@ -11,6 +11,7 @@ import {
   Trophy,
   TrendingUp,
   User,
+  Zap,
 } from "lucide-react";
 
 import { AppShell, type NavItem } from "@/components/fitcore/app-shell";
@@ -20,6 +21,7 @@ const items: NavItem[] = [
   { to: "/cliente", label: "Inicio", icon: Home, exact: true },
   { to: "/cliente/rutina", label: "Mi rutina", icon: Dumbbell },
   { to: "/cliente/progreso", label: "Mi progreso", icon: TrendingUp },
+  { to: "/cliente/fuerza", label: "Mi fuerza", icon: Zap },
   { to: "/cliente/clases", label: "Mis clases", icon: CalendarDays },
   { to: "/cliente/evaluaciones", label: "Mis evaluaciones", icon: ClipboardList },
   { to: "/cliente/fotos", label: "Mis fotos", icon: Camera },
