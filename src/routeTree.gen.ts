@@ -30,6 +30,7 @@ import { Route as ClienteFotosRouteImport } from './routes/cliente/fotos'
 import { Route as ClienteHabitosRouteImport } from './routes/cliente/habitos'
 import { Route as ClienteLogrosRouteImport } from './routes/cliente/logros'
 import { Route as ClienteNutricionRouteImport } from './routes/cliente/nutricion'
+import { Route as ClientePerfilRouteImport } from './routes/cliente/perfil'
 import { Route as ClienteProgresoRouteImport } from './routes/cliente/progreso'
 import { Route as ClienteRutinaRouteImport } from './routes/cliente/rutina'
 import { Route as AppClientesIndexRouteImport } from './routes/app/clientes.index'
@@ -143,6 +144,11 @@ const ClienteNutricionRoute = ClienteNutricionRouteImport.update({
   path: '/nutricion',
   getParentRoute: () => ClienteRouteRoute,
 } as any)
+const ClientePerfilRoute = ClientePerfilRouteImport.update({
+  id: '/perfil',
+  path: '/perfil',
+  getParentRoute: () => ClienteRouteRoute,
+} as any)
 const ClienteProgresoRoute = ClienteProgresoRouteImport.update({
   id: '/progreso',
   path: '/progreso',
@@ -198,6 +204,7 @@ export interface FileRoutesByFullPath {
   '/cliente/habitos': typeof ClienteHabitosRoute
   '/cliente/logros': typeof ClienteLogrosRoute
   '/cliente/nutricion': typeof ClienteNutricionRoute
+  '/cliente/perfil': typeof ClientePerfilRoute
   '/cliente/progreso': typeof ClienteProgresoRoute
   '/cliente/rutina': typeof ClienteRutinaRoute
   '/admin/': typeof AdminIndexRoute
@@ -225,6 +232,7 @@ export interface FileRoutesByTo {
   '/cliente/habitos': typeof ClienteHabitosRoute
   '/cliente/logros': typeof ClienteLogrosRoute
   '/cliente/nutricion': typeof ClienteNutricionRoute
+  '/cliente/perfil': typeof ClientePerfilRoute
   '/cliente/progreso': typeof ClienteProgresoRoute
   '/cliente/rutina': typeof ClienteRutinaRoute
   '/admin': typeof AdminIndexRoute
@@ -256,6 +264,7 @@ export interface FileRoutesById {
   '/cliente/habitos': typeof ClienteHabitosRoute
   '/cliente/logros': typeof ClienteLogrosRoute
   '/cliente/nutricion': typeof ClienteNutricionRoute
+  '/cliente/perfil': typeof ClientePerfilRoute
   '/cliente/progreso': typeof ClienteProgresoRoute
   '/cliente/rutina': typeof ClienteRutinaRoute
   '/admin/': typeof AdminIndexRoute
@@ -288,6 +297,7 @@ export interface FileRouteTypes {
     | '/cliente/habitos'
     | '/cliente/logros'
     | '/cliente/nutricion'
+    | '/cliente/perfil'
     | '/cliente/progreso'
     | '/cliente/rutina'
     | '/admin/'
@@ -315,6 +325,7 @@ export interface FileRouteTypes {
     | '/cliente/habitos'
     | '/cliente/logros'
     | '/cliente/nutricion'
+    | '/cliente/perfil'
     | '/cliente/progreso'
     | '/cliente/rutina'
     | '/admin'
@@ -345,6 +356,7 @@ export interface FileRouteTypes {
     | '/cliente/habitos'
     | '/cliente/logros'
     | '/cliente/nutricion'
+    | '/cliente/perfil'
     | '/cliente/progreso'
     | '/cliente/rutina'
     | '/admin/'
@@ -515,6 +527,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ClienteNutricionRouteImport
       parentRoute: typeof ClienteRouteRoute
     }
+    '/cliente/perfil': {
+      id: '/cliente/perfil'
+      path: '/perfil'
+      fullPath: '/cliente/perfil'
+      preLoaderRoute: typeof ClientePerfilRouteImport
+      parentRoute: typeof ClienteRouteRoute
+    }
     '/cliente/progreso': {
       id: '/cliente/progreso'
       path: '/progreso'
@@ -617,6 +636,7 @@ interface ClienteRouteRouteChildren {
   ClienteHabitosRoute: typeof ClienteHabitosRoute
   ClienteLogrosRoute: typeof ClienteLogrosRoute
   ClienteNutricionRoute: typeof ClienteNutricionRoute
+  ClientePerfilRoute: typeof ClientePerfilRoute
   ClienteProgresoRoute: typeof ClienteProgresoRoute
   ClienteRutinaRoute: typeof ClienteRutinaRoute
   ClienteIndexRoute: typeof ClienteIndexRoute
@@ -631,6 +651,7 @@ const ClienteRouteRouteChildren: ClienteRouteRouteChildren = {
   ClienteHabitosRoute: ClienteHabitosRoute,
   ClienteLogrosRoute: ClienteLogrosRoute,
   ClienteNutricionRoute: ClienteNutricionRoute,
+  ClientePerfilRoute: ClientePerfilRoute,
   ClienteProgresoRoute: ClienteProgresoRoute,
   ClienteRutinaRoute: ClienteRutinaRoute,
   ClienteIndexRoute: ClienteIndexRoute,
