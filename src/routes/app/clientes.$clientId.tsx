@@ -245,7 +245,8 @@ function ClientProfile() {
         <TabsContent value="chat" className="mt-4">
           <ChatPanel clientId={clientId} />
         </TabsContent>
-        <TabsContent value="agenda" className="mt-4">
+        <TabsContent value="agenda" className="mt-4 space-y-4">
+          <ClassPackageCard clientId={clientId} canEdit />
           <ClientAgendaTab clientId={clientId} canEdit />
         </TabsContent>
         <TabsContent value="pagos" className="mt-4">
