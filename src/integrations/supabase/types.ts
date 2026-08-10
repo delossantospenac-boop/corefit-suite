@@ -49,40 +49,64 @@ export type Database = {
       }
       appointments: {
         Row: {
+          actual_duration_min: number | null
+          attended: boolean | null
           class_type: string | null
           client_id: string
+          completed_at: string | null
+          counts_against_package: boolean
           created_at: string
+          day_id: string | null
           duration_min: number
           id: string
           notes: string | null
+          plan_note: string | null
+          started_at: string | null
           starts_at: string
           status: Database["public"]["Enums"]["appointment_status"]
+          template_id: string | null
           title: string
           trainer_id: string
           updated_at: string
         }
         Insert: {
+          actual_duration_min?: number | null
+          attended?: boolean | null
           class_type?: string | null
           client_id: string
+          completed_at?: string | null
+          counts_against_package?: boolean
           created_at?: string
+          day_id?: string | null
           duration_min?: number
           id?: string
           notes?: string | null
+          plan_note?: string | null
+          started_at?: string | null
           starts_at: string
           status?: Database["public"]["Enums"]["appointment_status"]
+          template_id?: string | null
           title?: string
           trainer_id: string
           updated_at?: string
         }
         Update: {
+          actual_duration_min?: number | null
+          attended?: boolean | null
           class_type?: string | null
           client_id?: string
+          completed_at?: string | null
+          counts_against_package?: boolean
           created_at?: string
+          day_id?: string | null
           duration_min?: number
           id?: string
           notes?: string | null
+          plan_note?: string | null
+          started_at?: string | null
           starts_at?: string
           status?: Database["public"]["Enums"]["appointment_status"]
+          template_id?: string | null
           title?: string
           trainer_id?: string
           updated_at?: string
@@ -93,6 +117,20 @@ export type Database = {
             columns: ["client_id"]
             isOneToOne: false
             referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "appointments_day_id_fkey"
+            columns: ["day_id"]
+            isOneToOne: false
+            referencedRelation: "workout_days"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "appointments_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "workout_templates"
             referencedColumns: ["id"]
           },
         ]
@@ -279,6 +317,7 @@ export type Database = {
         Row: {
           archived: boolean
           birth_date: string | null
+          classes_purchased: number
           created_at: string
           email: string | null
           full_name: string
@@ -301,6 +340,7 @@ export type Database = {
         Insert: {
           archived?: boolean
           birth_date?: string | null
+          classes_purchased?: number
           created_at?: string
           email?: string | null
           full_name: string
@@ -323,6 +363,7 @@ export type Database = {
         Update: {
           archived?: boolean
           birth_date?: string | null
+          classes_purchased?: number
           created_at?: string
           email?: string | null
           full_name?: string
@@ -653,6 +694,81 @@ export type Database = {
             columns: ["plan_id"]
             isOneToOne: false
             referencedRelation: "nutrition_plans"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      membership_payments: {
+        Row: {
+          amount: number
+          billing_cycle: string
+          created_at: string
+          currency: string
+          id: string
+          method: string | null
+          notes: string | null
+          paid_at: string | null
+          period_end: string | null
+          period_start: string
+          plan_id: string | null
+          provider: string | null
+          provider_ref: string | null
+          status: Database["public"]["Enums"]["payment_status"]
+          subscription_id: string | null
+          trainer_id: string
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          billing_cycle?: string
+          created_at?: string
+          currency?: string
+          id?: string
+          method?: string | null
+          notes?: string | null
+          paid_at?: string | null
+          period_end?: string | null
+          period_start?: string
+          plan_id?: string | null
+          provider?: string | null
+          provider_ref?: string | null
+          status?: Database["public"]["Enums"]["payment_status"]
+          subscription_id?: string | null
+          trainer_id: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          billing_cycle?: string
+          created_at?: string
+          currency?: string
+          id?: string
+          method?: string | null
+          notes?: string | null
+          paid_at?: string | null
+          period_end?: string | null
+          period_start?: string
+          plan_id?: string | null
+          provider?: string | null
+          provider_ref?: string | null
+          status?: Database["public"]["Enums"]["payment_status"]
+          subscription_id?: string | null
+          trainer_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "membership_payments_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "subscription_plans"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "membership_payments_subscription_id_fkey"
+            columns: ["subscription_id"]
+            isOneToOne: false
+            referencedRelation: "trainer_subscriptions"
             referencedColumns: ["id"]
           },
         ]
@@ -1757,6 +1873,7 @@ export type Database = {
         Args: { _we_id: string }
         Returns: string
       }
+      trainer_access_ok: { Args: { _trainer_id: string }; Returns: boolean }
     }
     Enums: {
       app_role: "super_admin" | "gym_admin" | "trainer" | "client"
