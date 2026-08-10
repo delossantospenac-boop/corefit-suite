@@ -17,7 +17,9 @@ import {
   StrengthTab,
   WorkoutLogsTab,
 } from "@/components/fitcore/client-tabs";
+import { ClassPackageCard } from "@/components/fitcore/class-package";
 import { EmptyState, PageHeader, SectionCard } from "@/components/fitcore/primitives";
+
 import { ClientDialog } from "@/routes/app/clientes.index";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -209,7 +211,9 @@ function ClientProfile() {
               {client.status}
             </Badge>
           </SectionCard>
+          <ClassPackageCard clientId={clientId} canEdit />
         </TabsContent>
+
 
         <TabsContent value="evaluaciones" className="mt-4">
           <AssessmentsTab clientId={clientId} canEdit />
