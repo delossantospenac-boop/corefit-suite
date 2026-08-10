@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useMemo, useState } from "react";
-import { Copy, Pencil, Plus, Search, ShieldOff, ShieldCheck, Trash2, UserCog } from "lucide-react";
+import { Copy, History, Pencil, Plus, Search, ShieldOff, ShieldCheck, Trash2, UserCog } from "lucide-react";
 import { toast } from "sonner";
 import { z } from "zod";
 
@@ -76,6 +76,19 @@ type Plan = { id: string; name: string; max_clients: number | null };
 
 type ClientRow = { trainer_id: string; last_activity_at: string | null; created_at: string };
 
+type Payment = {
+  id: string;
+  trainer_id: string;
+  plan_id: string | null;
+  amount: number;
+  billing_cycle: string;
+  period_start: string;
+  period_end: string | null;
+  method: string | null;
+  status: "activo" | "pendiente" | "vencido" | "cancelado";
+  paid_at: string | null;
+};
+
 type EstadoKey = "activo" | "suspendido" | "pendiente" | "inactivo";
 
 const estadoTone: Record<EstadoKey, string> = {
@@ -100,11 +113,17 @@ function computeEstado(profile: TrainerProfile, sub: Subscription | undefined): 
   return "activo";
 }
 
+function computeEffectiveAccess(profile: TrainerProfile, sub: Subscription | undefined): boolean {
+  if (!profile.access_enabled) return false;
+  if (!sub) return true;
+  return sub.status === "activo" || sub.status === "pendiente";
+}
+
 function useTrainers() {
   return useQuery({
     queryKey: ["admin-trainers"],
     queryFn: async () => {
-      const [rolesRes, profilesRes, subsRes, plansRes, clientsRes] = await Promise.all([
+      const [rolesRes, profilesRes, subsRes, plansRes, clientsRes, paymentsRes] = await Promise.all([
         supabase.from("user_roles").select("user_id, role").in("role", ["trainer", "gym_admin"]),
         supabase
           .from("profiles")
@@ -114,6 +133,10 @@ function useTrainers() {
           .select("trainer_id, status, price, billing_cycle, started_at, next_billing_at, plan_id"),
         supabase.from("subscription_plans").select("id, name, max_clients"),
         supabase.from("clients").select("trainer_id, last_activity_at, created_at"),
+        supabase
+          .from("membership_payments")
+          .select("id, trainer_id, plan_id, amount, billing_cycle, period_start, period_end, method, status, paid_at")
+          .order("created_at", { ascending: false }),
       ]);
       const trainerIds = new Set((rolesRes.data ?? []).map((r) => r.user_id));
       const profiles = ((profilesRes.data ?? []) as TrainerProfile[]).filter((p) => trainerIds.has(p.id));
@@ -122,6 +145,7 @@ function useTrainers() {
         subs: (subsRes.data ?? []) as Subscription[],
         plans: (plansRes.data ?? []) as Plan[],
         clients: (clientsRes.data ?? []) as ClientRow[],
+        payments: (paymentsRes.data ?? []) as Payment[],
       };
     },
   });

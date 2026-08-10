@@ -97,10 +97,10 @@ function MiFuerza() {
 
       <SectionCard
         title="Evolución del 1RM"
-        subtitle={exercises.length ? "Selecciona un ejercicio" : undefined}
+        subtitle={exercises.length ? "Selecciona un ejercicio" : ""}
         action={
           exercises.length > 0 ? (
-            <Select value={activeExercise ?? undefined} onValueChange={setSelectedExercise}>
+            <Select value={activeExercise ?? ""} onValueChange={setSelectedExercise}>
               <SelectTrigger className="w-44"><SelectValue placeholder="Ejercicio" /></SelectTrigger>
               <SelectContent>
                 {exercises.map((e) => (
@@ -111,6 +111,7 @@ function MiFuerza() {
           ) : undefined
         }
       >
+
         {!activeExercise ? (
           <EmptyState title="Aún sin datos" description="Registra series de entrenamientos para ver tu evolución." />
         ) : loadingHistory ? (
