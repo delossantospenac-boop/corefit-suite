@@ -337,8 +337,10 @@ function ClientCard({ client, onDelete }: { client: ClientRow; onDelete: () => v
         </div>
       </dl>
     </Link>
+    </div>
   );
 }
+
 
 export function ClientDialog({
   open,
