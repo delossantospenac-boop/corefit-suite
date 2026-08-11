@@ -700,3 +700,74 @@ function CredentialsDialog({
     </Dialog>
   );
 }
+
+function PaymentHistoryDialog({
+  target,
+  payments,
+  plans,
+  onOpenChange,
+}: {
+  target: TrainerProfile | null;
+  payments: Payment[];
+  plans: Plan[];
+  onOpenChange: (v: boolean) => void;
+}) {
+  const rows = target ? payments.filter((p) => p.trainer_id === target.id) : [];
+
+  return (
+    <Dialog open={!!target} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-lg">
+        <DialogHeader>
+          <DialogTitle>Historial de pagos</DialogTitle>
+          <DialogDescription>
+            Pagos de membresía registrados para {target?.full_name ?? "este entrenador"}.
+          </DialogDescription>
+        </DialogHeader>
+        {rows.length === 0 ? (
+          <p className="py-6 text-center text-sm text-muted-foreground">Sin pagos registrados.</p>
+        ) : (
+          <ul className="max-h-80 space-y-2 overflow-y-auto">
+            {rows.map((p) => {
+              const plan = plans.find((pl) => pl.id === p.plan_id);
+              return (
+                <li
+                  key={p.id}
+                  className="rounded-lg border border-border/70 bg-background/50 px-3 py-2.5 text-sm"
+                >
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="font-medium">{currency(Number(p.amount))}</span>
+                    <Badge
+                      variant="outline"
+                      className={cn(
+                        "text-[10px] uppercase",
+                        p.status === "activo"
+                          ? "border-success/40 bg-success/10 text-success"
+                          : p.status === "pendiente"
+                            ? "border-warning/40 bg-warning/10 text-warning"
+                            : "border-border bg-muted text-muted-foreground",
+                      )}
+                    >
+                      {p.status}
+                    </Badge>
+                  </div>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    {plan?.name ?? "Plan"} · {p.billing_cycle === "anual" ? "Anual" : "Mensual"} ·{" "}
+                    {formatDate(p.period_start)}
+                    {p.period_end ? ` → ${formatDate(p.period_end)}` : ""}
+                  </p>
+                  <p className="mt-0.5 text-xs text-muted-foreground">
+                    {p.paid_at ? `Pagado: ${formatDateTime(p.paid_at)}` : "Pago pendiente"}
+                    {p.method ? ` · ${p.method}` : ""}
+                  </p>
+                </li>
+              );
+            })}
+          </ul>
+        )}
+        <DialogFooter>
+          <Button onClick={() => onOpenChange(false)}>Cerrar</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}

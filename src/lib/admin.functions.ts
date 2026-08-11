@@ -148,3 +148,29 @@ export const resetUserPassword = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     return { password };
   });
+
+/** Elimina la ficha de un cliente (y su cuenta de acceso si la tuviera). */
+export const deleteClientProfile = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data) => z.object({ clientId: z.string().uuid() }).parse(data))
+  .handler(async ({ data, context }) => {
+    const { data: client, error } = await context.supabase
+      .from("clients")
+      .select("id, user_id")
+      .eq("id", data.clientId)
+      .maybeSingle();
+    if (error) throw new Error(error.message);
+    if (!client) throw new Error("Cliente no encontrado o sin permisos");
+
+    // RLS permite borrar solo al entrenador dueño o al super admin.
+    const { error: dErr } = await context.supabase.from("clients").delete().eq("id", client.id);
+    if (dErr) throw new Error(dErr.message);
+
+    if (client.user_id) {
+      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+      await supabaseAdmin.from("user_roles").delete().eq("user_id", client.user_id);
+      await supabaseAdmin.auth.admin.deleteUser(client.user_id);
+    }
+
+    return { ok: true };
+  });
