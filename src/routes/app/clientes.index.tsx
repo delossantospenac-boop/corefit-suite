@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
-import { Archive, KeyRound, Plus, Search, UserPlus, Users } from "lucide-react";
+import { Archive, KeyRound, Plus, Search, Trash2, UserPlus, Users } from "lucide-react";
 import { toast } from "sonner";
 import { z } from "zod";
 
@@ -30,7 +30,7 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
-import { createClientAccess } from "@/lib/admin.functions";
+import { createClientAccess, deleteClientProfile } from "@/lib/admin.functions";
 import { useAuth } from "@/lib/auth-context";
 
 import {
@@ -76,6 +76,18 @@ function ClientsPage() {
   const [open, setOpen] = useState(false);
   const [creds, setCreds] = useState<{ email: string; password: string } | null>(null);
   const createAccess = useServerFn(createClientAccess);
+  const deleteClientFn = useServerFn(deleteClientProfile);
+  const [deleteTarget, setDeleteTarget] = useState<ClientRow | null>(null);
+
+  const removeClient = useMutation({
+    mutationFn: (clientId: string) => deleteClientFn({ data: { clientId } }),
+    onSuccess: () => {
+      toast.success("Cliente eliminado");
+      setDeleteTarget(null);
+      void queryClient.invalidateQueries({ queryKey: ["clients"] });
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
 
   const clientsQuery = useQuery({
     queryKey: ["clients", showArchived],
@@ -225,7 +237,7 @@ function ClientsPage() {
         <ul className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
           {filtered.map((c) => (
             <li key={c.id}>
-              <ClientCard client={c} />
+              <ClientCard client={c} onDelete={() => setDeleteTarget(c)} />
             </li>
           ))}
         </ul>
@@ -273,20 +285,55 @@ function ClientsPage() {
         </DialogContent>
       </Dialog>
 
+      <Dialog open={!!deleteTarget} onOpenChange={(v) => !v && setDeleteTarget(null)}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Eliminar cliente</DialogTitle>
+            <DialogDescription>
+              Se eliminará permanentemente la ficha de {deleteTarget?.full_name}, junto con sus
+              evaluaciones, rutinas, fotos, pagos y su acceso al panel. Esta acción no se puede deshacer.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setDeleteTarget(null)}>
+              Cancelar
+            </Button>
+            <Button
+              variant="destructive"
+              disabled={removeClient.isPending}
+              onClick={() => deleteTarget && removeClient.mutate(deleteTarget.id)}
+            >
+              <Trash2 className="mr-2 h-4 w-4" />
+              {removeClient.isPending ? "Eliminando..." : "Eliminar definitivamente"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
 
-function ClientCard({ client }: { client: ClientRow }) {
+function ClientCard({ client, onDelete }: { client: ClientRow; onDelete: () => void }) {
   const age = ageFrom(client.birth_date);
   const inactive = daysSince(client.last_activity_at);
 
   return (
+    <div className="relative">
+      <Button
+        variant="ghost"
+        size="icon"
+        aria-label={`Eliminar ${client.full_name}`}
+        className="absolute right-2 top-2 z-10 h-8 w-8 text-muted-foreground hover:text-destructive"
+        onClick={onDelete}
+      >
+        <Trash2 className="h-4 w-4" />
+      </Button>
     <Link
       to="/app/clientes/$clientId"
       params={{ clientId: client.id }}
       className="card-surface block p-4 transition-all duration-300 hover:border-primary/40 hover:shadow-neon"
     >
+
       <div className="flex min-w-0 items-center gap-3">
         {client.photo_url ? (
           <img
@@ -326,8 +373,10 @@ function ClientCard({ client }: { client: ClientRow }) {
         </div>
       </dl>
     </Link>
+    </div>
   );
 }
+
 
 export function ClientDialog({
   open,
