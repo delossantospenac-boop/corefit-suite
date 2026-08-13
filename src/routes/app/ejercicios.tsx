@@ -82,6 +82,7 @@ function ExercisesPage() {
   const [muscle, setMuscle] = useState(ALL);
   const [equipment, setEquipment] = useState(ALL);
   const [difficulty, setDifficulty] = useState(ALL);
+  const [etype, setEtype] = useState(ALL);
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState<ExerciseRow | null>(null);
 
@@ -95,9 +96,10 @@ function ExercisesPage() {
       const matchM = muscle === ALL || e.muscle_group === muscle;
       const matchE = equipment === ALL || e.equipment === equipment;
       const matchD = difficulty === ALL || e.difficulty === difficulty;
-      return matchTerm && matchM && matchE && matchD;
+      const matchT = etype === ALL || (e.exercise_type ?? "fuerza") === etype;
+      return matchTerm && matchM && matchE && matchD && matchT;
     });
-  }, [library, search, muscle, equipment, difficulty]);
+  }, [library, search, muscle, equipment, difficulty, etype]);
 
   const save = useMutation({
     mutationFn: async (values: ExerciseValues) => {
@@ -207,6 +209,18 @@ function ExercisesPage() {
                 {prettyLabel(m)}
               </SelectItem>
             ))}
+          </SelectContent>
+        </Select>
+        <Select value={etype} onValueChange={setEtype}>
+          <SelectTrigger className="w-full sm:w-40">
+            <SelectValue placeholder="Tipo" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value={ALL}>Todos los tipos</SelectItem>
+            <SelectItem value="funcional">Funcional</SelectItem>
+            <SelectItem value="fuerza">Fuerza</SelectItem>
+            <SelectItem value="cardio">Cardio</SelectItem>
+            <SelectItem value="movilidad">Movilidad</SelectItem>
           </SelectContent>
         </Select>
       </div>
