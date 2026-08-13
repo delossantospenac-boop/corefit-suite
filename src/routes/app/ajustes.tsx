@@ -54,31 +54,52 @@ function UnitsSettings() {
   const [distance, setDistance] = useState<DistanceUnit>(units.distance);
 
   const save = useMutation({
-    mutationFn: async () => {
+    mutationFn: async (patch: {
+      unit_weight?: WeightUnit;
+      unit_length?: LengthUnit;
+      unit_distance?: DistanceUnit;
+    }) => {
       if (!user) throw new Error("Sesión no válida");
-      const { error } = await supabase
-        .from("profiles")
-        .update({ unit_weight: weight, unit_length: length, unit_distance: distance })
-        .eq("id", user.id);
+      const { error } = await supabase.from("profiles").update(patch).eq("id", user.id);
       if (error) throw error;
     },
     onSuccess: async () => {
       await refresh();
-      toast.success("Unidades actualizadas");
+      toast.success("Unidades actualizadas — valores convertidos");
     },
     onError: (e: Error) => toast.error(e.message),
   });
 
+  /** Aplica el cambio al instante en toda la app (estado local + guardado). */
+  function applyWeight(v: WeightUnit) {
+    setWeight(v);
+    save.mutate({ unit_weight: v });
+  }
+  function applyLength(v: LengthUnit) {
+    setLength(v);
+    save.mutate({ unit_length: v });
+  }
+  function applyDistance(v: DistanceUnit) {
+    setDistance(v);
+    save.mutate({ unit_distance: v });
+  }
+
   const dirty = weight !== units.weight || length !== units.length || distance !== units.distance;
+  const syncing = save.isPending;
 
   return (
     <div className="space-y-5">
       <PageHeader
         title="Unidades de medida"
-        subtitle="Se aplican a ejercicios, rutinas, evaluaciones y progreso"
+        subtitle="Se aplican al instante en ejercicios, rutinas, evaluaciones y progreso"
         action={
-          <Button onClick={() => save.mutate()} disabled={!dirty || save.isPending}>
-            {save.isPending ? (
+          <Button
+            onClick={() =>
+              save.mutate({ unit_weight: weight, unit_length: length, unit_distance: distance })
+            }
+            disabled={!dirty || syncing}
+          >
+            {syncing ? (
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             ) : (
               <Save className="mr-2 h-4 w-4" />
@@ -92,7 +113,7 @@ function UnitsSettings() {
         <div className="grid gap-4 sm:grid-cols-3">
           <div className="space-y-2">
             <Label>Peso</Label>
-            <Select value={weight} onValueChange={(v) => setWeight(v as WeightUnit)}>
+            <Select value={weight} onValueChange={(v) => applyWeight(v as WeightUnit)}>
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
@@ -107,7 +128,7 @@ function UnitsSettings() {
           </div>
           <div className="space-y-2">
             <Label>Altura y medidas</Label>
-            <Select value={length} onValueChange={(v) => setLength(v as LengthUnit)}>
+            <Select value={length} onValueChange={(v) => applyLength(v as LengthUnit)}>
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
@@ -122,7 +143,7 @@ function UnitsSettings() {
           </div>
           <div className="space-y-2">
             <Label>Distancia</Label>
-            <Select value={distance} onValueChange={(v) => setDistance(v as DistanceUnit)}>
+            <Select value={distance} onValueChange={(v) => applyDistance(v as DistanceUnit)}>
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>

@@ -47,7 +47,7 @@ export function RoleGate({ allow, children }: { allow: AppRole[]; children: Reac
       void router.navigate({ to: "/auth", replace: true });
       return;
     }
-    if (needsSubscription && !blockReason) {
+    if (needsSubscription && role !== "super_admin" && !blockReason) {
       void router.navigate({ to: "/suscripcion", replace: true });
       return;
     }

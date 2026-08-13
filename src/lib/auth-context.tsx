@@ -71,6 +71,8 @@ export function trainerNeedsSubscription(
   role: AppRole | null,
   subscription: TrainerSubscription | null,
 ): boolean {
+  // El super admin es una cuenta ilimitada: nunca requiere membresía.
+  if (role === "super_admin") return false;
   if (role !== "trainer" && role !== "gym_admin") return false;
   return subscription === null;
 }
