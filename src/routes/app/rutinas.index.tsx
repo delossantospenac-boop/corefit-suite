@@ -8,6 +8,7 @@ import {
   Pencil,
   Plus,
   Search,
+  Sparkles,
   Star,
   Trash2,
   UserPlus,
@@ -16,6 +17,7 @@ import {
 import { toast } from "sonner";
 
 import { EmptyState, ListSkeleton, PageHeader, StatCard } from "@/components/fitcore/primitives";
+import { AiRoutineDialog } from "@/components/fitcore/rutinas/ai-routine-dialog";
 import { RoutineForm, type RoutineFormValues } from "@/components/fitcore/rutinas/routine-form";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -88,6 +90,7 @@ function RutinasPage() {
   const [clientFilter, setClientFilter] = useState(ALL);
 
   const [formOpen, setFormOpen] = useState(false);
+  const [aiOpen, setAiOpen] = useState(false);
   const [editing, setEditing] = useState<RoutineRow | null>(null);
   const [assignTarget, setAssignTarget] = useState<RoutineRow | null>(null);
   const [assignClient, setAssignClient] = useState<string>(NO_CLIENT);
@@ -214,7 +217,7 @@ function RutinasPage() {
           onOpenChange={setAiOpen}
           clients={clients.map((c) => ({ id: c.id, full_name: c.full_name }))}
           trainerId={user.id}
-          onCreated={(id) => {
+          onCreated={(id: string) => {
             void queryClient.invalidateQueries({ queryKey: ["routines"] });
             void navigate({ to: "/app/rutinas/$routineId", params: { routineId: id } });
           }}
