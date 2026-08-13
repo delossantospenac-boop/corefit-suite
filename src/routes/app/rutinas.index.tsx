@@ -197,11 +197,29 @@ function RutinasPage() {
         title="Rutinas"
         subtitle="Diseña, organiza y asigna planes de entrenamiento"
         action={
-          <Button size="lg" className="shadow-neon" onClick={() => setFormOpen(true)}>
-            <Plus className="mr-2 h-4 w-4" /> ➕ Crear rutina
-          </Button>
+          <div className="flex flex-wrap gap-2">
+            <Button size="lg" className="shadow-neon" onClick={() => setFormOpen(true)}>
+              <Plus className="mr-2 h-4 w-4" /> ➕ Crear rutina
+            </Button>
+            <Button size="lg" variant="outline" onClick={() => setAiOpen(true)}>
+              <Sparkles className="mr-2 h-4 w-4 text-neon" /> Crear con IA
+            </Button>
+          </div>
         }
       />
+
+      {user && (
+        <AiRoutineDialog
+          open={aiOpen}
+          onOpenChange={setAiOpen}
+          clients={clients.map((c) => ({ id: c.id, full_name: c.full_name }))}
+          trainerId={user.id}
+          onCreated={(id) => {
+            void queryClient.invalidateQueries({ queryKey: ["routines"] });
+            void navigate({ to: "/app/rutinas/$routineId", params: { routineId: id } });
+          }}
+        />
+      )}
 
       <div className="grid gap-3 sm:grid-cols-3">
         <StatCard label="Rutinas activas" value={activeCount} icon={Dumbbell} tone="neon" />
