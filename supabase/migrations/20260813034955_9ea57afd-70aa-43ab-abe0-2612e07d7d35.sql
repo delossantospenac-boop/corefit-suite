@@ -1,0 +1,35 @@
+INSERT INTO public.exercises (trainer_id, name, muscle_group, secondary_muscles, equipment, difficulty, exercise_type, description, instructions, tips)
+SELECT NULL, v.name, v.mg, v.sec, v.eq, v.dif, 'funcional', v.descr, v.instr, v.tips
+FROM (VALUES
+ ('Burpee','cuerpo_completo',ARRAY['pecho','cuadriceps','cardio'],'peso_corporal','intermedio','Ejercicio funcional metabólico de cuerpo completo.','Baja a plancha, haz una flexión, recoge los pies y salta con brazos arriba.','Mantén el core firme y aterriza con rodillas suaves.'),
+ ('Swing con kettlebell','cuerpo_completo',ARRAY['gluteos','femorales','espalda'],'kettlebell','intermedio','Patrón de bisagra de cadera explosivo.','Bisagra de cadera, proyecta la kettlebell entre las piernas y empuja con glúteos hasta la altura del pecho.','La potencia sale de la cadera, no de los brazos.'),
+ ('Thruster con mancuernas','cuerpo_completo',ARRAY['cuadriceps','hombros','gluteos'],'mancuernas','avanzado','Sentadilla frontal combinada con press de hombros.','Sentadilla completa y al subir empuja las mancuernas por encima de la cabeza.','Encadena el movimiento sin pausa en la subida.'),
+ ('Battle ropes','cardio',ARRAY['hombros','abdominales'],'otros','principiante','Trabajo metabólico con cuerdas.','Semisentadilla y alterna ondas rápidas con los brazos.','Respira de forma constante y mantén el ritmo.'),
+ ('Box jump','cuadriceps',ARRAY['gluteos','pantorrillas'],'otros','intermedio','Salto pliométrico al cajón.','Salta al cajón con ambos pies y baja controlando.','Baja siempre caminando para proteger el tendón de Aquiles.'),
+ ('Slam ball','cuerpo_completo',ARRAY['abdominales','espalda'],'otros','principiante','Lanzamiento explosivo de balón al suelo.','Eleva el balón sobre la cabeza y lánzalo con fuerza al suelo.','Acompaña el lanzamiento con el core, no solo con los brazos.'),
+ ('Wall ball','cuerpo_completo',ARRAY['cuadriceps','hombros'],'otros','intermedio','Sentadilla con lanzamiento al muro.','Sentadilla con el balón al pecho y lánzalo al objetivo al subir.','Recibe el balón absorbiendo con las piernas.'),
+ ('Sentadilla goblet','cuadriceps',ARRAY['gluteos','abdominales'],'kettlebell','principiante','Sentadilla con peso frontal, ideal para técnica.','Sostén la kettlebell al pecho y baja manteniendo el torso erguido.','Rodillas alineadas con los pies.'),
+ ('Zancada caminando','cuadriceps',ARRAY['gluteos','femorales'],'mancuernas','principiante','Patrón unilateral funcional de marcha.','Avanza dando zancadas largas bajando la rodilla trasera casi al suelo.','Tronco erguido y paso controlado.'),
+ ('Peso muerto a una pierna','femorales',ARRAY['gluteos','espalda'],'mancuernas','intermedio','Bisagra unilateral para estabilidad y cadena posterior.','Apoya una pierna, baja el peso mientras elevas la otra pierna atrás.','Cadera cerrada y espalda neutra.'),
+ ('Step up al cajón','cuadriceps',ARRAY['gluteos'],'mancuernas','principiante','Subida a cajón unilateral.','Sube al cajón empujando con la pierna de apoyo y baja controlando.','Evita impulsarte con la pierna de abajo.'),
+ ('Plancha frontal','abdominales',ARRAY['hombros','cuerpo_completo'],'peso_corporal','principiante','Isométrico de core anti-extensión.','Antebrazos y punta de pies, cuerpo en línea recta.','Aprieta glúteos y abdomen; no hundas la cadera.'),
+ ('Plancha lateral','abdominales',ARRAY['gluteos'],'peso_corporal','principiante','Isométrico anti-lateral para oblicuos.','Apoya un antebrazo y eleva la cadera manteniendo la línea.','Hombro alineado sobre el codo.'),
+ ('Dead bug','abdominales',ARRAY['cuerpo_completo'],'peso_corporal','principiante','Control lumbopélvico.','Tumbado, extiende brazo y pierna opuestos sin despegar la lumbar.','Movimiento lento y respiración controlada.'),
+ ('Bird dog','abdominales',ARRAY['espalda','gluteos'],'peso_corporal','principiante','Estabilidad de core en cuadrupedia.','Extiende brazo y pierna contrarios manteniendo la cadera estable.','Imagina un vaso de agua sobre la espalda.'),
+ ('Hollow hold','abdominales',ARRAY['cuerpo_completo'],'peso_corporal','intermedio','Isométrico de core en tensión.','Tumbado, eleva piernas y hombros formando una banana.','Lumbar pegada al suelo.'),
+ ('Mountain climbers','abdominales',ARRAY['cardio','hombros'],'peso_corporal','principiante','Core dinámico con componente cardiovascular.','En plancha alta, alterna rodillas al pecho a ritmo alto.','Cadera baja y estable.'),
+ ('Paseo del granjero','cuerpo_completo',ARRAY['espalda','abdominales'],'mancuernas','principiante','Acarreo cargado para agarre y core.','Camina erguido con peso en ambas manos.','Hombros atrás y pasos cortos.'),
+ ('Empuje de trineo','cuerpo_completo',ARRAY['cuadriceps','gluteos'],'otros','intermedio','Empuje horizontal cargado.','Empuja el trineo con brazos extendidos y pasos potentes.','Cuerpo inclinado y core activo.'),
+ ('Turkish get up','cuerpo_completo',ARRAY['hombros','abdominales'],'kettlebell','avanzado','Patrón complejo de fuerza y movilidad.','Desde el suelo levántate manteniendo la kettlebell arriba y regresa.','Domina la secuencia sin peso antes de cargar.'),
+ ('Remo invertido con anillas','espalda',ARRAY['biceps','abdominales'],'otros','intermedio','Tracción horizontal con peso corporal.','Cuerpo en línea, tira del pecho hacia las anillas.','Escápulas atrás antes de flexionar los codos.'),
+ ('Flexión con rotación','pecho',ARRAY['abdominales','hombros'],'peso_corporal','intermedio','Empuje con rotación torácica.','Haz una flexión y al subir rota abriendo el brazo al techo.','Gira desde el tronco, no desde la cadera.'),
+ ('Salto lateral (skater)','cuadriceps',ARRAY['gluteos','cardio'],'peso_corporal','intermedio','Pliometría lateral para potencia y estabilidad.','Salta de lado a lado aterrizando sobre una pierna.','Aterriza absorbiendo con la cadera.'),
+ ('Saltos a la cuerda','cardio',ARRAY['pantorrillas'],'otros','principiante','Trabajo cardiovascular y coordinación.','Salta con la cuerda a ritmo constante, rodillas suaves.','Muñecas hacen el giro, no los brazos.'),
+ ('Sentadilla con salto','cuadriceps',ARRAY['gluteos','cardio'],'peso_corporal','intermedio','Pliometría de tren inferior.','Sentadilla y salta con máxima extensión.','Aterriza suave y encadena la siguiente repetición.'),
+ ('Movilidad de cadera 90/90','movilidad',ARRAY['gluteos'],'peso_corporal','principiante','Movilidad rotacional de cadera.','Sentado con piernas en 90/90, alterna lados con el tronco erguido.','No fuerces el rango; respira en cada posición.'),
+ ('Gato-camello','movilidad',ARRAY['espalda','abdominales'],'peso_corporal','principiante','Movilidad segmentaria de columna.','Alterna flexión y extensión de columna en cuadrupedia.','Coordina el movimiento con la respiración.'),
+ ('World greatest stretch','movilidad',ARRAY['cuerpo_completo'],'peso_corporal','principiante','Estiramiento dinámico global de calentamiento.','Zancada profunda, apoya la mano y rota abriendo el pecho.','Ideal antes de entrenar, 5 repeticiones por lado.')
+) AS v(name, mg, sec, eq, dif, descr, instr, tips)
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.exercises e WHERE e.trainer_id IS NULL AND lower(e.name) = lower(v.name)
+);
