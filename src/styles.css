@@ -5,7 +5,7 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
- * FITCORE design system — NEGRO + AZUL NEÓN + BLANCO.
+ * FITCORE design system — NEGRO + ROJO NEÓN + BLANCO.
  * Dark mode is the primary (and only) experience.
  * All colors are oklch semantic tokens. Never hardcode colors in components.
  */
@@ -86,17 +86,17 @@
   --popover: oklch(0.205 0.014 264);
   --popover-foreground: oklch(0.985 0.002 264);
 
-  /* Azul neón */
-  --neon: oklch(0.78 0.17 231);
-  --neon-soft: oklch(0.78 0.17 231 / 0.16);
-  --primary: oklch(0.78 0.17 231);
+  /* Rojo neón */
+  --neon: oklch(0.78 0.17 20);
+  --neon-soft: oklch(0.78 0.17 20 / 0.16);
+  --primary: oklch(0.78 0.17 20);
   --primary-foreground: oklch(0.16 0.012 264);
 
   --secondary: oklch(0.26 0.016 264);
   --secondary-foreground: oklch(0.985 0.002 264);
   --muted: oklch(0.26 0.016 264);
-  --muted-foreground: oklch(0.7 0.02 258);
-  --accent: oklch(0.29 0.03 240);
+  --muted-foreground: oklch(0.7 0.02 15);
+  --accent: oklch(0.29 0.03 15);
   --accent-foreground: oklch(0.985 0.002 264);
 
   --destructive: oklch(0.62 0.21 22);
@@ -108,22 +108,22 @@
 
   --border: oklch(1 0 0 / 9%);
   --input: oklch(1 0 0 / 13%);
-  --ring: oklch(0.78 0.17 231 / 0.6);
+  --ring: oklch(0.78 0.17 20 / 0.6);
 
-  --chart-1: oklch(0.78 0.17 231);
-  --chart-2: oklch(0.62 0.14 231);
-  --chart-3: oklch(0.88 0.1 220);
+  --chart-1: oklch(0.78 0.17 20);
+  --chart-2: oklch(0.62 0.14 20);
+  --chart-3: oklch(0.88 0.1 15);
   --chart-4: oklch(0.72 0.16 160);
   --chart-5: oklch(0.8 0.15 78);
 
   --sidebar: oklch(0.185 0.013 264);
   --sidebar-foreground: oklch(0.92 0.005 264);
-  --sidebar-primary: oklch(0.78 0.17 231);
+  --sidebar-primary: oklch(0.78 0.17 20);
   --sidebar-primary-foreground: oklch(0.16 0.012 264);
   --sidebar-accent: oklch(0.25 0.016 264);
   --sidebar-accent-foreground: oklch(0.985 0.002 264);
   --sidebar-border: oklch(1 0 0 / 8%);
-  --sidebar-ring: oklch(0.78 0.17 231 / 0.6);
+  --sidebar-ring: oklch(0.78 0.17 20 / 0.6);
 
   --gradient-neon: linear-gradient(
     135deg,
