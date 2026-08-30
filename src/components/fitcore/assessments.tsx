@@ -142,6 +142,7 @@ export function AssessmentsTab({ clientId, canEdit }: { clientId: string; canEdi
                 <XAxis dataKey="label" stroke="var(--muted-foreground)" fontSize={11} tickLine={false} axisLine={false} />
                 <YAxis stroke="var(--muted-foreground)" fontSize={11} tickLine={false} axisLine={false} />
                 <Tooltip
+                  cursor={false}
                   contentStyle={{
                     background: "var(--popover)",
                     border: "1px solid var(--border)",
@@ -302,6 +303,7 @@ export function ProgressTab({ clientId }: { clientId: string }) {
                     <XAxis dataKey="label" stroke="var(--muted-foreground)" fontSize={10} tickLine={false} axisLine={false} />
                     <YAxis stroke="var(--muted-foreground)" fontSize={10} tickLine={false} axisLine={false} domain={["auto", "auto"]} />
                     <Tooltip
+                      cursor={false}
                       contentStyle={{
                         background: "var(--popover)",
                         border: "1px solid var(--border)",
