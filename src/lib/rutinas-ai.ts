@@ -100,6 +100,9 @@ export async function applyGeneratedPlan(opts: ApplyPlanOptions): Promise<string
       const sets = Math.min(Math.max(Math.round(ex.sets || 3), 1), 10);
       const reps = (ex.reps ?? "10").toString().slice(0, 20);
       const rest = Math.min(Math.max(Math.round(ex.rest_seconds || 90), 15), 600);
+      const rir = ex.rir == null ? null : Math.min(Math.max(Number(ex.rir), 0), 5);
+      const rpe = ex.rpe == null ? null : Math.min(Math.max(Number(ex.rpe), 1), 10);
+      const tempo = ex.tempo?.toString().slice(0, 30) || null;
 
       const { data: we } = await supabase
         .from("workout_exercises")
@@ -110,7 +113,9 @@ export async function applyGeneratedPlan(opts: ApplyPlanOptions): Promise<string
           sets,
           reps,
           rest_seconds: rest,
-          rir: ex.rir ?? null,
+          rir,
+          rpe,
+          tempo,
           notes: ex.notes ?? null,
         })
         .select("id")
@@ -123,7 +128,9 @@ export async function applyGeneratedPlan(opts: ApplyPlanOptions): Promise<string
           set_number: s + 1,
           reps,
           rest_seconds: rest,
-          rir: ex.rir ?? null,
+          rir,
+          rpe,
+          tempo,
         })),
       );
     }
